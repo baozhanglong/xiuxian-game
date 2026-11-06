@@ -1,0 +1,2990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>境界修炼 · 练气到大乘</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23A23B2A'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='%23F1EEE3' font-family='serif'%3E境%3C/text%3E%3C/svg%3E">
+<style>
+  /* ===== 色板与字体：取自青绿山水的石青、石绿、赭墨，底色用宣纸 ===== */
+  :root {
+    --paper: #E7E3D6;
+    --paper-card: #F2EFE4;
+    --ink: #1F1D19;
+    --ink-2: #5A554A;
+    --ink-3: #8B8578;
+    --line: #C7C1B0;
+    --blue: #245E6B;
+    --green: #4A6A4E;
+    --cinnabar: #A23B2A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", SimSun, serif; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 18px 40px; }
+
+  /* ===== 顶部状态条：道号 · 境界 · 灵石 ===== */
+  .topbar {
+    position: sticky; top: 0; z-index: 6;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 18px; background: var(--paper-card); border-bottom: 1px solid var(--line);
+  }
+  .topbar-left { min-width: 0; }
+  .topbar-name {
+    font-family: "Source Han Serif SC", "Songti SC", SimSun, serif;
+    font-size: 15px; font-weight: 600; letter-spacing: .04em; line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .topbar-realm { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; margin-top: 1px; }
+  .topbar-stone { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .topbar-stone svg { width: 15px; height: 15px; stroke: var(--blue); fill: none; stroke-width: 1.6; }
+
+  /* ===== 底部页面切换：图标 + 名字 ===== */
+  .nav {
+    position: sticky; bottom: 0; display: flex; margin-top: 18px;
+    background: var(--paper); border-top: 1px solid var(--line); z-index: 5;
+  }
+  .nav-btn {
+    flex: 1 1 0; min-width: 0; min-height: 58px; padding: 8px 2px 9px;
+    background: var(--paper); border: none;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    font-family: inherit; font-size: 12px; color: var(--ink-3); cursor: pointer;
+    letter-spacing: .04em; overflow: hidden;
+  }
+  .nav-icon { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-btn:hover { color: var(--ink-2); }
+  .nav-btn[data-active="true"] { color: var(--cinnabar); font-weight: 600; }
+
+  /* 页面用 [hidden] 切换；容器自带 display 时用 !important 才能真的藏住 */
+  [hidden] { display: none !important; }
+
+  /* ===== 主体：单栏，宽屏限宽保证行长 ===== */
+  .layout { margin-top: 18px; max-width: 760px; }
+
+  .card { background: var(--paper-card); border: 1px solid var(--line); padding: 18px 16px; }
+  @media (min-width: 640px) { .card { padding: 22px 20px; } }
+
+  /* ===== 当前境界 ===== */
+  .realm-name {
+    font-family: "Source Han Serif SC", "Songti SC", SimSun, serif;
+    font-size: 34px; font-weight: 600; letter-spacing: .05em; line-height: 1.3; margin: 2px 0 0;
+    word-break: break-all;
+  }
+  .realm-count { font-size: 13px; color: var(--ink-2); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+  .bar-block { margin-top: 18px; }
+  .bar-top { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .bar-track { height: 10px; border: 1px solid var(--line); background: var(--paper); position: relative; }
+  .bar-fill { height: 100%; width: 0; background: var(--blue); transition: width .25s linear; }
+  .bar-note { font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-top: 20px; background: var(--line); border: 1px solid var(--line); }
+  @media (min-width: 520px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .stat { background: var(--paper-card); padding: 10px 12px; min-width: 0; }
+  .stat-k { font-size: 11px; color: var(--ink-3); letter-spacing: .1em; }
+  .stat-v { font-size: 19px; font-variant-numeric: tabular-nums; margin-top: 1px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .btn {
+    flex: 1 1 auto; min-height: 46px; padding: 11px 16px; font-family: inherit; font-size: 15px;
+    cursor: pointer; border-radius: 0; border: 1px solid var(--ink); background: none; color: var(--ink);
+    transition: background .15s, color .15s, opacity .15s;
+  }
+  .btn:hover:not(:disabled) { background: var(--ink); color: var(--paper-card); }
+  .btn-primary { background: var(--cinnabar); border-color: var(--cinnabar); color: var(--paper-card); font-weight: 600; }
+  .btn-primary:hover:not(:disabled) { background: #8C3123; border-color: #8C3123; color: var(--paper-card); }
+  .btn:disabled { opacity: .38; cursor: not-allowed; }
+  .btn-quiet { border-color: var(--line); color: var(--ink-2); font-size: 13px; min-height: 40px; flex: 0 0 auto; }
+  .btn-quiet:hover { background: none; color: var(--ink); border-color: var(--ink-2); }
+
+  .risk { font-size: 12px; color: var(--cinnabar); margin-top: 10px; min-height: 1px; }
+
+  /* ===== 开局：取名、性别、灵根 ===== */
+  .start { max-width: 640px; margin: 0 auto; }
+  .start-kicker { font-size: 12px; letter-spacing: .2em; color: var(--ink-3); margin: 0; }
+  .start-title { font-family: "Source Han Serif SC", "Songti SC", SimSun, serif; font-size: 27px; font-weight: 600; margin: 4px 0 0; letter-spacing: .05em; }
+  .start-intro { font-size: 14px; color: var(--ink-2); margin: 8px 0 0; line-height: 1.7; }
+  .field { margin-top: 20px; }
+  .field-label { display: block; font-size: 12px; letter-spacing: .12em; color: var(--ink-3); margin-bottom: 7px; }
+  .field input[type="text"] {
+    width: 100%; min-height: 46px; padding: 10px 12px; font-size: 16px; font-family: inherit;
+    color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 0;
+  }
+  .field input[type="text"]:focus { outline: 2px solid var(--blue); outline-offset: -1px; }
+  .choice-row { display: flex; gap: 8px; }
+  .choice {
+    flex: 1 1 0; min-height: 44px; background: none; border: 1px solid var(--line);
+    font-family: inherit; font-size: 14px; color: var(--ink-2); cursor: pointer; border-radius: 0;
+  }
+  .choice:hover { color: var(--ink); border-color: var(--ink-2); }
+  .choice[data-selected="true"] { border-color: var(--cinnabar); color: var(--cinnabar); font-weight: 600; }
+
+  .root-card { border: 1px solid var(--line); background: var(--paper-card); }
+  .root-row { padding: 10px 12px; }
+  .root-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 14px 12px 12px; }
+  .root-orbs-wrap { min-width: 0; }
+  .root-orbs { display: flex; flex-wrap: wrap; gap: 10px; min-width: 0; }
+  .root-orb-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .root-orb-score { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; line-height: 1; }
+  .root-head-right { text-align: right; min-width: 0; flex: 0 0 auto; }
+  .root-orb {
+    flex: 0 0 auto; width: 27px; height: 27px; border-radius: 50%; border: 1px solid var(--ink);
+    display: flex; align-items: center; justify-content: center; background: var(--paper);
+    font-family: "Source Han Serif SC", "Songti SC", SimSun, serif;
+    font-size: 14px; line-height: 1; color: var(--ink); letter-spacing: 0;
+  }
+  .root-orb[data-long="true"] { font-size: 10px; }
+  .root-grade {
+    display: block; font-family: "Source Han Serif SC", "Songti SC", SimSun, serif;
+    font-size: 16px; font-weight: 600; letter-spacing: .1em; color: var(--ink);
+  }
+  .root-quality { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .root-quality b { font-size: 18px; color: var(--blue); font-weight: 600; }
+  .root-bonus { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); line-height: 1.7; font-variant-numeric: tabular-nums; }
+  .root-actions { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .root-actions .btn { flex: 0 0 auto; padding: 9px 16px; min-height: 40px; }
+  .root-rolls { font-size: 12px; color: var(--ink-3); }
+
+  .start-btn { width: 100%; margin-top: 22px; }
+  .start-note { font-size: 12px; color: var(--ink-3); margin: 10px 0 0; text-align: center; }
+
+  /* ===== 功法阁 ===== */
+  .tech-card { margin-top: 18px; max-width: 760px; }
+  .tech-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .tech-head h2 { font-family: "Source Han Serif SC", "Songti SC", SimSun, serif; font-size: 17px; font-weight: 600; margin: 0; letter-spacing: .06em; }
+  .tech-hint { font-size: 12px; color: var(--ink-2); }
+  .tier-tabs { display: flex; margin: 12px 0 14px; border-bottom: 1px solid var(--line); }
+  .tier-tab {
+    flex: 1 1 0; min-width: 0; background: none; border: none; border-bottom: 2px solid transparent;
+    padding: 8px 6px 10px; font-family: inherit; font-size: 14px; color: var(--ink-2);
+    cursor: pointer; min-height: 44px; line-height: 1.4;
+  }
+  .tier-tab:hover { color: var(--ink); }
+  .tier-tab[data-active="true"] { color: var(--cinnabar); border-bottom-color: var(--cinnabar); font-weight: 600; }
+  .tier-tab .tab-state { display: block; font-size: 11px; color: var(--ink-3); font-weight: 400; }
+  .tier-tab[data-active="true"] .tab-state { color: var(--ink-2); }
+
+  .tech-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 560px) { .tech-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .tech-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .tech { display: flex; flex-direction: column; gap: 5px; background: var(--paper-card); border: 1px solid var(--line); padding: 12px; min-width: 0; }
+  .tech[data-locked="true"] { opacity: .5; }
+  .tech[data-equipped="true"] { border-color: var(--cinnabar); background: rgba(162,59,42,.04); }
+  .tech-tier { font-size: 11px; letter-spacing: .08em; color: var(--ink-3); }
+  .tech-empty { grid-column: 1 / -1; padding: 18px 4px; font-size: 13px; color: var(--ink-3); }
+  .tech-name { font-family: "Source Han Serif SC", "Songti SC", SimSun, serif; font-size: 16px; font-weight: 600; line-height: 1.35; word-break: break-all; }
+  .tech-gain { font-size: 12px; color: var(--blue); font-variant-numeric: tabular-nums; }
+  .tech-extra { font-size: 11px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .tech-btn {
+    margin-top: 8px; width: 100%; min-height: 40px; padding: 8px 10px; font-family: inherit; font-size: 13px;
+    cursor: pointer; border-radius: 0; border: 1px solid var(--ink); background: none; color: var(--ink);
+  }
+  .tech-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper-card); }
+  .tech-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .tech-btn[data-default="true"] { border-color: var(--cinnabar); color: var(--cinnabar); }
+
+  /* ===== 生平 ===== */
+  .life-card { margin-top: 18px; max-width: 760px; }
+  .life-summary { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 0 0 18px; }
+  @media (min-width: 560px) { .life-summary { grid-template-columns: repeat(3, 1fr); } }
+  .life-cell { background: var(--paper-card); padding: 10px 12px; min-width: 0; }
+  .life-k { font-size: 11px; letter-spacing: .1em; color: var(--ink-3); }
+  .life-v { font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; margin-top: 2px; word-break: break-all; }
+  .life-list { border-top: 1px solid var(--line); }
+  .life-item { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 11px 0; border-bottom: 1px solid rgba(199,193,176,.5); }
+  .life-time { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .life-text { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+  .life-item[data-kind="start"] .life-text { color: var(--ink); font-weight: 600; }
+  .life-item[data-kind="good"] .life-text { color: var(--green); }
+  .life-item[data-kind="bad"] .life-text { color: var(--cinnabar); }
+  .life-empty { padding: 16px 0; font-size: 13px; color: var(--ink-3); }
+
+  /* ===== 历练：三十层副本逐条列 ===== */
+  .dungeon-grid { display: flex; flex-direction: column; margin-top: 14px; }
+  .dungeon-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .dungeon-row:last-child { border-bottom: none; }
+  .dungeon-left { min-width: 0; }
+  .dungeon-name {
+    font-family: "Source Han Serif SC", "Songti SC", SimSun, serif;
+    font-size: 15px; font-weight: 600; letter-spacing: .04em;
+  }
+  .dungeon-meta { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .dungeon-btn {
+    flex: 0 0 auto; min-width: 64px; min-height: 36px; padding: 6px 14px;
+    font-family: inherit; font-size: 13px; cursor: pointer;
+    border: 1px solid var(--ink); background: none; color: var(--ink); border-radius: 0;
+  }
+  .dungeon-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper-card); }
+  .dungeon-btn:disabled { opacity: .4; cursor: not-allowed; border-color: var(--line); color: var(--ink-3); }
+
+  /* ===== 商店 / 丹药 / 轮回 ===== */
+  .shop-card { margin-top: 18px; max-width: 760px; }
+  .stone-line { font-size: 13px; color: var(--ink-2); margin: 0 0 14px; }
+  .stone-line b { font-family: "Source Han Serif SC", "Songti SC", SimSun, serif; font-size: 20px; color: var(--blue); font-variant-numeric: tabular-nums; }
+  /* ===== 洞府门户：两列卡片，看图就能点进去 ===== */
+  .back-link {
+    background: none; border: none; padding: 0 0 12px; margin: 0;
+    font-family: inherit; font-size: 12px; color: var(--ink-3); cursor: pointer; letter-spacing: .06em;
+  }
+  .back-link:hover { color: var(--cinnabar); }
+  .cave-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 560px) { .cave-grid { grid-template-columns: repeat(3, 1fr); } }
+  .cave-card {
+    display: flex; flex-direction: column; align-items: center; gap: 9px;
+    padding: 18px 10px 16px; background: var(--paper-card); border: 1px solid var(--line);
+    font-family: inherit; color: var(--ink); cursor: pointer; min-width: 0;
+  }
+  .cave-card:hover { border-color: var(--ink-2); }
+  .cave-icon {
+    width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+    background: rgba(36, 94, 107, .08); border: 1px solid var(--line);
+  }
+  .cave-icon svg { width: 22px; height: 22px; stroke: var(--blue); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .cave-name {
+    font-family: "Source Han Serif SC", "Songti SC", SimSun, serif;
+    font-size: 15px; font-weight: 600; letter-spacing: .06em;
+  }
+  .cave-meta { font-size: 12px; color: var(--ink-3); text-align: center; line-height: 1.5; }
+  .cave-meta[data-tone="active"] { color: var(--cinnabar); }
+  .cave-meta[data-tone="done"] { color: var(--green); }
+
+  /* ===== 道侣：候选人各一张卡 ===== */
+  .partner-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+  @media (min-width: 560px) { .partner-grid { grid-template-columns: repeat(3, 1fr); } }
+  /* ===== 背包：上分段页签，下三列卡格 ===== */
+  .bag-tabs {
+    display: flex; gap: 2px; padding: 3px; margin: 0 0 14px;
+    background: var(--paper-card); border: 1px solid var(--line);
+  }
+  .bag-tab {
+    flex: 1 1 0; min-width: 0; min-height: 38px; padding: 6px 4px;
+    background: none; border: none; font-family: inherit; font-size: 14px;
+    color: var(--ink-2); cursor: pointer; letter-spacing: .06em;
+  }
+  .bag-tab[data-active="true"] { background: var(--ink); color: var(--paper-card); font-weight: 600; }
+  .bag-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  @media (min-width: 640px) { .bag-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; } }
+  .bag-card {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    padding: 10px 6px 0; min-height: 96px; min-width: 0;
+    background: var(--paper-card); border: 1px solid var(--line);
+    font-family: inherit; text-align: center; color: var(--ink);
+    cursor: pointer; position: relative;
+  }
+  .bag-card:disabled { cursor: default; }
+  .bag-card[data-empty="true"] { opacity: .5; }
+  .bag-card-top { font-size: 11px; color: var(--ink-3); letter-spacing: .04em; }
+  .bag-card-icon svg {
+    width: 20px; height: 20px; stroke: var(--ink-2); stroke-width: 1.3;
+    fill: none; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .bag-card-top[data-rarity] { font-weight: 600; }
+  .bag-card-name { font-size: 13px; font-weight: 600; line-height: 1.35; word-break: break-all; }
+  .bag-card-sub { font-size: 11px; color: var(--ink-3); line-height: 1.4; }
+  .bag-card-foot {
+    width: 100%; margin-top: auto; border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--ink-2); padding: 6px 2px; letter-spacing: .04em;
+  }
+  .bag-card-foot[data-on="true"] { color: var(--cinnabar); font-weight: 600; }
+  .bag-scene { position: relative; border: 1px solid var(--line); margin-bottom: 14px; overflow: hidden; }
+  .bag-scene[hidden] { display: none; }
+  .bag-scene svg { display: block; width: 100%; height: 150px; }
+  .bag-scene-info {
+    position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center;
+    gap: 4px; padding: 14px 16px; pointer-events: none;
+  }
+  .bag-scene-k { font-size: 12px; letter-spacing: .18em; color: var(--ink-2); }
+  .bag-scene-v { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .bag-section-title {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+    margin: 18px 0 10px; padding-top: 12px; border-top: 1px solid var(--line);
+  }
+  .bag-section-title b { font-size: 15px; font-weight: 600; letter-spacing: .06em; }
+  .bag-section-title span { font-size: 12px; color: var(--ink-3); }
+  .bag-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .bag-actions .btn { flex: 1 1 auto; min-height: 40px; }
+
+  .slot-title { font-size: 13px; color: var(--ink-2); letter-spacing: .08em; margin: 18px 0 8px; }
+
+  /* 品级着色：白→金由素到贵，跟游戏里的约定一致 */
+  .pill-name[data-rarity="white"] { color: var(--ink-2); }
+  .pill-name[data-rarity="green"] { color: var(--green); }
+  .pill-name[data-rarity="blue"] { color: var(--blue); }
+  .pill-name[data-rarity="purple"] { color: #6B4E7A; }
+  .pill-name[data-rarity="red"] { color: var(--cinnabar); }
+  .pill-name[data-rarity="gold"] { color: #9A742C; }
+  .bag-card-name[data-rarity="white"], .bag-card-top[data-rarity="white"] { color: #A29C8C; }
+  .bag-card-name[data-rarity="green"] { color: var(--green); }
+  .bag-card-name[data-rarity="blue"] { color: var(--blue); }
+  .bag-card-name[data-rarity="purple"] { color: #6B4E7A; }
+  .bag-card-name[data-rarity="red"] { color: var(--cinnabar); }
+  .bag-card-name[data-rarity="gold"] { color: #9A742C; }
+
+  /* ===== 人物页：属性清单，左名右值 ===== */
+  .attr-list { display: flex; flex-direction: column; }
+  .attr-row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .attr-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .attr-k { font-size: 13px; color: var(--ink-2); flex: 0 0 auto; letter-spacing: .06em; }
+  .attr-v { font-size: 15px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; word-break: break-all; }
+  .attr-v[data-tone="accent"] { color: var(--blue); font-weight: 600; }
+  .attr-v[data-tone="good"] { color: var(--green); }
+  .attr-group { font-size: 12px; color: var(--ink-3); letter-spacing: .16em; margin: 18px 0 2px; }
+  .attr-group:first-child { margin-top: 0; }
+
+  .shop-grid, .pill-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  @media (min-width: 560px) { .shop-grid, .pill-grid { grid-template-columns: repeat(2, 1fr); } }
+  .shop-item, .pill-item { border: 1px solid var(--line); background: var(--paper-card); padding: 13px 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .shop-name, .pill-name { font-family: "Source Han Serif SC", "Songti SC", SimSun, serif; font-size: 16px; font-weight: 600; letter-spacing: .04em; }
+  .shop-desc, .pill-desc { font-size: 12px; color: var(--ink-2); line-height: 1.6; }
+  .shop-price { font-size: 12px; color: var(--blue); font-variant-numeric: tabular-nums; }
+  .shop-own, .pill-own { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .shop-btn, .pill-btn {
+    margin-top: 6px; width: 100%; min-height: 40px; padding: 8px 10px; font-family: inherit; font-size: 13px;
+    cursor: pointer; border: 1px solid var(--ink); background: none; color: var(--ink); border-radius: 0;
+  }
+  .shop-btn:hover:not(:disabled), .pill-btn:hover:not(:disabled) { background: var(--ink); color: var(--paper-card); }
+  .shop-btn:disabled, .pill-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .rebirth-note { font-size: 13px; color: var(--ink-2); line-height: 1.8; margin: 0 0 4px; }
+
+  .foot { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
+
+  /* ===== 提示条 ===== */
+  .toast {
+    position: fixed; left: 50%; bottom: 84px; transform: translate(-50%, 12px);
+    background: var(--ink); color: var(--paper-card); font-size: 13px;
+    padding: 10px 16px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 32px);
+  }
+  .toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) { .bar-fill, .toast { transition: none; } }
+</style>
+</head>
+<body>
+<!-- 顶部状态条：入道后常驻，显示道号、境界与灵石 -->
+<div class="topbar" id="topBar" hidden>
+  <div class="topbar-left">
+    <div class="topbar-name" id="topName">无名散修</div>
+    <div class="topbar-realm" id="topRealm">练气一层</div>
+  </div>
+  <div class="topbar-stone">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l6 7.5-6 10.5L6 10.5 12 3z"/></svg>
+    <span id="topStone">0</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ===== 开篇：取名 · 性别 · 灵根 ===== -->
+  <section class="card view start" id="viewStart" aria-label="开局">
+    <p class="start-kicker">开篇</p>
+    <h2 class="start-title serif">道友，请留步</h2>
+    <p class="start-intro">报上名号，择定灵根。此后这一界的路，由你自己走。</p>
+
+    <div class="field">
+      <label class="field-label" for="nameInput">名号</label>
+      <input type="text" id="nameInput" maxlength="8" placeholder="无名散修" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <span class="field-label">性别</span>
+      <div class="choice-row" id="genderRow">
+        <button class="choice" type="button" data-gender="男">男</button>
+        <button class="choice" type="button" data-gender="女">女</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">灵根</span>
+      <div class="root-card">
+        <div class="root-head">
+          <div class="root-orbs-wrap">
+            <div class="root-orbs" id="rootOrbs"></div>
+          </div>
+          <div class="root-head-right">
+            <span class="root-grade" id="rootGrade">—</span>
+          </div>
+        </div>
+
+        <div class="root-row root-bonus" id="rootBonus">—</div>
+        <div class="root-row root-actions">
+          <button class="btn btn-quiet" type="button" id="rerollBtn">刷新灵根</button>
+          <span class="root-rolls" id="rootRolls">已刷 0 次 · 次数不限</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary start-btn" type="button" id="startBtn" disabled>步入仙途</button>
+    <p class="start-note" id="startNote">选定灵根后即可入道</p>
+  </section>
+
+  <!-- ===== 洞府：本世的门户，各处分身入口都挂在这里 ===== -->
+  <section class="card view" id="viewCave" aria-label="洞府" hidden>
+    <div class="cave-grid" id="caveGrid"></div>
+  </section>
+
+  <!-- ===== 人物：一身属性总览 ===== -->
+  <section class="card view" id="viewAttr" aria-label="人物属性" hidden>
+    <div class="attr-list" id="attrList"></div>
+  </section>
+
+  <!-- ===== 背包：装备 / 丹药 / 法宝 三卷合一 ===== -->
+  <section class="card view" id="viewBag" aria-label="背包" hidden>
+    <button class="back-link" type="button" data-back="cave">← 洞府</button>
+    <div class="bag-tabs" id="bagTabs" role="tablist" aria-label="背包分类">
+      <button class="bag-tab" type="button" data-bag="equip" role="tab">装备</button>
+      <button class="bag-tab" type="button" data-bag="pills" role="tab">丹药</button>
+      <button class="bag-tab" type="button" data-bag="treasure" role="tab">法宝</button>
+    </div>
+    <div class="bag-scene" id="bagScene">
+      <svg viewBox="0 0 320 150" preserveAspectRatio="none" aria-hidden="true">
+        <rect x="0" y="0" width="320" height="150" fill="#EFEBDE"/>
+        <path d="M0 108 L44 74 L78 96 L112 62 L150 98 L188 72 L226 100 L268 68 L320 104 L320 150 L0 150 Z" fill="#B7C7BF" opacity="0.55"/>
+        <path d="M0 122 L52 92 L96 112 L138 86 L182 112 L226 90 L272 114 L320 96 L320 150 L0 150 Z" fill="#7C9A92" opacity="0.75"/>
+        <path d="M0 134 L60 112 L108 126 L152 108 L200 128 L248 112 L292 128 L320 120 L320 150 L0 150 Z" fill="#4A6A4E"/>
+        <circle cx="252" cy="46" r="13" fill="#F2EFE4" stroke="#A23B2A" stroke-width="0.8" opacity="0.9"/>
+        <path d="M24 64 h44 M36 56 h44 M60 74 h30" stroke="#8C8578" stroke-width="0.7" opacity="0.5"/>
+      </svg>
+      <div class="bag-scene-info">
+        <div class="bag-scene-k">洞天景象</div>
+        <div class="bag-scene-v" id="bagSceneWorn">已穿 0/8</div>
+        <div class="bag-scene-v" id="bagScenePower">战力 0</div>
+        <div class="bag-scene-v" id="bagSceneStore">背包 0/120 格</div>
+      </div>
+    </div>
+    <div id="bagEquipArea"></div>
+    <div class="bag-grid" id="bagGrid"></div>
+    <div class="bag-actions">
+      <button class="btn" id="autoEquipBtn" type="button">自动替换</button>
+    </div>
+    <p class="rebirth-note" id="bagNote"></p>
+  </section>
+
+  <!-- ===== 道侣：可同时羁绊最多5位，带来永久修行加成 ===== -->
+  <section class="card view" id="viewPartner" aria-label="道侣" hidden>
+    <button class="back-link" type="button" data-back="cave">← 洞府</button>
+    <div class="life-summary" id="partnerSummary"></div>
+    <div class="partner-grid" id="partnerGrid"></div>
+    <p class="rebirth-note" id="partnerNote"></p>
+  </section>
+
+  <div class="layout view" id="viewCultivation">
+
+    <!-- ===== 左：当前境界与操作 ===== -->
+    <section class="card" aria-label="当前境界">
+      <p class="realm-name serif" id="realmName">练气一层</p>
+      <div class="realm-count" id="realmCount">第 1 重 / 共 70 重</div>
+      <div class="realm-count" id="playerLine">道号：无名散修</div>
+      <div class="realm-count" id="techLine">主修功法：尚未参悟</div>
+
+      <div class="bar-block">
+        <div class="bar-top">
+          <span>修为</span>
+          <span id="cultText">0 / 100</span>
+        </div>
+        <div class="bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barTrack">
+          <div class="bar-fill" id="barFill"></div>
+        </div>
+        <div class="bar-note" id="gainNote">打坐中：每秒 +1 修为</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-k">攻击</div><div class="stat-v" id="statAtk">10</div></div>
+        <div class="stat"><div class="stat-k">防御</div><div class="stat-v" id="statDef">5</div></div>
+        <div class="stat"><div class="stat-k">气血</div><div class="stat-v" id="statHp">100</div></div>
+        <div class="stat"><div class="stat-k">灵石</div><div class="stat-v" id="statStone">0</div></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="meditateBtn" type="button">停止打坐</button>
+        <button class="btn btn-primary" id="breakBtn" type="button">修为不足</button>
+        <button class="btn btn-quiet" id="injectBtn" type="button">注入修为（体验）</button>
+      </div>
+      <p class="risk" id="riskNote"></p>
+    </section>
+
+  </div>
+
+  <!-- ===== 功法阁：天地玄黄四阶，按灵根生成 ===== -->
+  <section class="card tech-card view" id="viewTech" aria-label="功法阁" hidden>
+    <div class="tier-tabs" id="tierTabs" role="tablist"></div>
+    <div class="tech-grid" id="techGrid"></div>
+  </section>
+
+  <!-- ===== 历练：三十层副本，第 N 层掉 1~N 阶装备 ===== -->
+  <section class="card view" id="viewDungeon" aria-label="历练" hidden>
+    <div class="life-summary" id="dungeonSummary"></div>
+    <div class="dungeon-grid" id="dungeonGrid"></div>
+    <p class="rebirth-note" id="dungeonResult"></p>
+  </section>
+
+  <!-- ===== 商店：用灵石买丹药 ===== -->
+  <section class="card shop-card view" id="viewShop" aria-label="商店" hidden>
+    <button class="back-link" type="button" data-back="cave">← 洞府</button>
+    <div class="stone-line">囊中灵石：<b id="shopStone">0</b></div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </section>
+
+  <!-- ===== 轮回：转世重修，换来更快的修行 ===== -->
+  <section class="card shop-card view" id="viewRebirth" aria-label="轮回" hidden>
+    <div class="life-summary" id="rebirthSummary"></div>
+    <p class="rebirth-note" id="rebirthNote"></p>
+    <div class="actions">
+      <button class="btn btn-primary" id="rebirthBtn" type="button" disabled>转世重修</button>
+    </div>
+  </section>
+
+  <p class="foot">全部数据保存在本机浏览器，关掉网页再打开会自动接着上次的进度。</p>
+
+  <!-- ===== 页面切换：修炼 / 功法 / 生平 / 商店 / 丹药 / 轮回（固定在页面底部） ===== -->
+  <nav class="nav" id="navBar" role="tablist" aria-label="页面切换">
+    <button class="nav-btn" type="button" data-view="cave" id="navCave" role="tab">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19h18"/><path d="M6 19l4.5-8 3 4 2-3 2.5 7"/><path d="M12.5 7.5a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"/></svg>
+      洞府
+    </button>
+    <button class="nav-btn" type="button" data-view="cultivation" id="navCultivation" role="tab">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.4 4.2 5.4 6.6 5.4 9.4A5.4 5.4 0 1 1 6.6 12.4c0-2.8 2-5.2 5.4-9.4z"/><path d="M12 19.4c-2 0-3.4-1.5-3.4-3.4"/></svg>
+      修炼
+    </button>
+    <button class="nav-btn" type="button" data-view="techniques" id="navTechniques" role="tab">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h6.4A2.6 2.6 0 0 1 13 8.1V19"/><path d="M20 5.5h-4.4A2.6 2.6 0 0 0 13 8.1V19"/><path d="M4 5.5V18.5h6.4"/><path d="M20 5.5V18.5h-4.4"/></svg>
+      功法
+    </button>
+    <button class="nav-btn" type="button" data-view="history" id="navDungeon" role="tab">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 4.6l4.4 4.3"/><path d="M19.4 4.6l-4.4 4.3"/><path d="M9 8.9l6 6.2"/><path d="M12 3.4v3"/><path d="M5.6 12H8"/><path d="M16 12h2.4"/><path d="M12 13.4l-2 6.4"/><path d="M12 13.4l2 6.4"/></svg>
+      历练
+    </button>
+    <button class="nav-btn" type="button" data-view="attr" id="navAttr" role="tab">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.2"/><path d="M5.4 20.4c0-3.6 3-6 6.6-6s6.6 2.4 6.6 6"/></svg>
+      人物
+    </button>
+    <button class="nav-btn" type="button" data-view="rebirth" id="navRebirth" role="tab">
+      <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.7-6"/><path d="M20 4v5h-5"/><circle cx="12" cy="12" r="1.6"/></svg>
+      轮回
+    </button>
+  </nav>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================================
+   一、配置区：想调平衡只改这里，不用动下面的逻辑
+   needStart  该境界第一重的突破所需修为
+   growth     该境界每一重需求的增长倍率
+   rateStart  第一重突破成功率
+   rateDecay  每多一重成功率下降多少（不低于 minRate）
+   lossRatio  突破失败损失的修为比例
+   bonus      每突破一重累加的属性
+   gainPerSec 在该境界打坐每秒获得的修为
+   ========================================================================= */
+const REALM_TABLE = [
+  {
+    name: "练气",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 100, growth: 1.45,
+    rateStart: 0.95, rateDecay: 0.02, minRate: 0.55,
+    lossRatio: 0.10,
+    bonus: { atk: 2, def: 1, hp: 20 },
+    gainPerSec: 1
+  },
+  {
+    name: "筑基",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 6000, growth: 1.55,
+    rateStart: 0.88, rateDecay: 0.02, minRate: 0.50,
+    lossRatio: 0.15,
+    bonus: { atk: 10, def: 6, hp: 100 },
+    gainPerSec: 6
+  },
+  {
+    name: "金丹",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 150000, growth: 1.50,
+    rateStart: 0.80, rateDecay: 0.02, minRate: 0.45,
+    lossRatio: 0.20,
+    bonus: { atk: 35, def: 22, hp: 380 },
+    gainPerSec: 30
+  },
+  {
+    name: "元婴",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 4000000, growth: 1.45,
+    rateStart: 0.72, rateDecay: 0.025, minRate: 0.40,
+    lossRatio: 0.25,
+    bonus: { atk: 95, def: 62, hp: 1200 },
+    gainPerSec: 130
+  },
+  {
+    name: "合体",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 120000000, growth: 1.40,
+    rateStart: 0.62, rateDecay: 0.025, minRate: 0.35,
+    lossRatio: 0.30,
+    bonus: { atk: 280, def: 190, hp: 3600 },
+    gainPerSec: 600
+  },
+  {
+    name: "炼虚",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 4000000000, growth: 1.35,
+    rateStart: 0.52, rateDecay: 0.025, minRate: 0.30,
+    lossRatio: 0.35,
+    bonus: { atk: 850, def: 580, hp: 11000 },
+    gainPerSec: 2800
+  },
+  {
+    name: "大乘",
+    stages: ["一层", "二层", "三层", "四层", "五层", "六层", "七层", "八层", "九层", "大圆满"],
+    needStart: 150000000000, growth: 1.30,
+    rateStart: 0.42, rateDecay: 0.02, minRate: 0.25,
+    lossRatio: 0.40,
+    bonus: { atk: 2600, def: 1800, hp: 34000 },
+    gainPerSec: 12000,
+    lastStageIsEnd: true   // 大乘大圆满就是此世尽头，不再需要突破
+  }
+];
+
+/* =========================================================================
+   二、常量：所有数字都给名字，避免代码里冒出一堆看不懂的“魔法数字”
+   ========================================================================= */
+const BASE_ATTACK = 10;
+const BASE_DEFENSE = 5;
+const BASE_HP = 100;
+const SAVE_KEY = "xiuxian.realm.save.v1";
+const ACCRUE_TICK_MS = 500;     // 结算间隔：500ms 结算一次，进度条不跳动太厉害
+const AUTO_SAVE_MS = 8000;
+const LOG_LIMIT = 8;
+const HISTORY_LIMIT = 200;
+const PERCENT = 100;
+
+/* =========================================================================
+   二-2、商店与丹药、轮回的数值（想调物价和收益只改这里）
+   ========================================================================= */
+const STONE_PER_BREAKTHROUGH = 20;   // 每次突破成功得 20 灵石，再按重数加一点
+const STONE_PER_STAGE = 4;
+
+// 丹药：店里买、丹药页用。effect 决定用下去发生什么
+const PILLS = {
+  juqi: {
+    name: "聚气丹", price: 60,
+    desc: "服下立得当前所需修为的 30%",
+    use: "instantGain"
+  },
+  pojing: {
+    name: "破境丹", price: 160,
+    desc: "下一次突破成功率 +30%，用后即散",
+    use: "breakBonus"
+  },
+  wudao: {
+    name: "悟道丹", price: 320,
+    desc: "10 分钟内打坐速度翻倍",
+    use: "speedBuff"
+  }
+};
+
+const PILL_ORDER = ["juqi", "pojing", "wudao"];
+const PILL_INSTANT_RATIO = 0.30;   // 聚气丹给当前需求的 30%
+const PILL_BREAK_BONUS = 0.30;     // 破境丹的突破加成
+const SPEED_BUFF_MS = 10 * 60 * 1000;
+const SPEED_BUFF_MULT = 2;
+
+// 洞府·道侣：多位可结缘之人，各有修行加成；可同时羁绊最多5位，转世仍相随
+const PARTNERS = {
+  qingwu: { name: "苏青梧", title: "剑修", rate: 0.08, line: "剑心通明，与你对坐论剑，心境渐稳。" },
+  yunxi: { name: "姜月初", title: "丹修", rate: 0.10, line: "炉火不熄，替你温养经脉，化药力为修为。" },
+  baili: { name: "白璃", title: "狐族", rate: 0.12, line: "灵狐善引灵气，夜里替你守关，进境最快。" },
+  liuru: { name: "柳如烟", title: "阵修", rate: 0.15, line: "以阵入道，为你布下聚灵大阵，灵气流转不息。" },
+  chuhan: { name: "楚寒烟", title: "符修", rate: 0.13, line: "符箓通神，替你绘制护身符箓，逢凶化吉。" },
+  huayu: { name: "花解语", title: "花灵", rate: 0.16, line: "灵花献瑞，以花香助你凝练灵力，进境如飞。" },
+  moqian: { name: "墨千尘", title: "器修", rate: 0.11, line: "以器入道，替你温养法宝，锋芒更盛。" },
+  yeling: { name: "叶灵兮", title: "巫族", rate: 0.14, line: "巫族圣女，以血脉之力护你周全，万邪不侵。" }
+};
+const PARTNER_ORDER = ["qingwu", "yunxi", "baili", "liuru", "chuhan", "huayu", "moqian", "yeling"];
+
+// 洞府·法宝：一生只祭一件，随身加成攻防血
+const TREASURES = {
+  qingling: { name: "青灵珠", price: 300, minStage: 9, atk: 8, def: 8, hp: 60, desc: "温养灵台的小珠，攻防俱有微涨。" },
+  feijian: { name: "青竹飞剑", price: 800, minStage: 12, atk: 30, def: 10, hp: 40, desc: "以竹为骨，出鞘三丈取人。" },
+  fanyin: { name: "梵音钟", price: 2000, minStage: 15, atk: 60, def: 40, hp: 300, desc: "钟声一响，护体金光自发。" }
+};
+const TREASURE_ORDER = ["qingling", "feijian", "fanyin"];
+
+// 背包·装备：七个部位，戒指能戴两只，所以可穿槽共八格
+// key 是掉落池的标识，worn 是可穿槽的标识（戒指两只共用同一池）
+const EQUIP_SLOT_TABLE = [
+  { key: "weapon", name: "武器", suffix: "剑", worn: "weapon" },
+  { key: "helmet", name: "头盔", suffix: "冠", worn: "helmet" },
+  { key: "armor", name: "盔甲", suffix: "甲", worn: "armor" },
+  { key: "bracer", name: "护腕", suffix: "腕", worn: "bracer" },
+  { key: "boots", name: "鞋子", suffix: "履", worn: "boots" },
+  { key: "necklace", name: "首饰", suffix: "佩", worn: "necklace" },
+  { key: "ring", name: "戒指", suffix: "戒", worn: "ring1" }
+];
+// 物品池的键（七个）
+const EQUIP_ITEM_SLOTS = EQUIP_SLOT_TABLE.map((item) => item.key);
+// 可穿槽的键（八个，戒指两格）
+const EQUIP_SLOT_ORDER = ["weapon", "helmet", "armor", "bracer", "boots", "necklace", "ring1", "ring2"];
+const EQUIP_SLOTS = {
+  weapon: "武器", helmet: "头盔", armor: "盔甲", bracer: "护腕",
+  boots: "鞋子", necklace: "首饰", ring1: "戒指一", ring2: "戒指二"
+};
+// 可穿槽 → 掉落池
+const EQUIP_POOL_BY_SLOT = {
+  weapon: "weapon", helmet: "helmet", armor: "armor", bracer: "bracer",
+  boots: "boots", necklace: "necklace", ring1: "ring", ring2: "ring"
+};
+const EQUIP_BONUS_FIELDS = ["atk", "def", "hp"];
+
+// 三十阶的名号：一阶一阶往上，名字按阶数取，逻辑不去记这三十个字符串
+const EQUIP_TIER_NAMES = [
+  "铁木", "青锋", "寒铁", "流云", "赤铜", "玄晶", "霜纹", "紫电", "墨玉", "青岚",
+  "赤霄", "碎星", "玄冥", "太清", "九幽", "赤阳", "星陨", "龙纹", "云篆", "玄金",
+  "青莲", "玄冰", "赤霞", "雷霆", "幽兰", "昊阳", "玄天", "太虚", "鸿蒙", "无极"
+];
+const EQUIP_TIER_COUNT = EQUIP_TIER_NAMES.length;
+
+// 装备的品级：同一阶里再分六等，越靠后越难出、数值越高
+const EQUIP_RARITIES = [
+  { key: "white", name: "白板", mult: 1.00, weight: 40 },
+  { key: "green", name: "绿装", mult: 1.15, weight: 25 },
+  { key: "blue", name: "蓝装", mult: 1.35, weight: 15 },
+  { key: "purple", name: "紫装", mult: 1.60, weight: 10 },
+  { key: "red", name: "红装", mult: 1.90, weight: 7 },
+  { key: "gold", name: "金装", mult: 2.30, weight: 3 }
+];
+const RARITY_BY_KEY = {};
+EQUIP_RARITIES.forEach((rarity) => {
+  RARITY_BY_KEY[rarity.key] = rarity;
+});
+
+// 每阶的数值按阶数平方往上抬，再乘品级倍率；各部位倾向不同，攻、防、血各有轻重
+function equipStatBase(slotKey, tier) {
+  const base = tier * tier;
+  if (slotKey === "weapon") return { atk: 10 * tier + base, def: 0, hp: 0 };
+  if (slotKey === "helmet") return { atk: 0, def: 6 * tier + base * 0.6, hp: 30 * tier + 2 * base };
+  if (slotKey === "armor") return { atk: 0, def: 8 * tier + base, hp: 40 * tier + 4 * base };
+  if (slotKey === "bracer") return { atk: 4 * tier, def: 4 * tier + base * 0.4, hp: 20 * tier + 1.5 * base };
+  if (slotKey === "boots") return { atk: 0, def: 4 * tier + base * 0.5, hp: 30 * tier + 3 * base };
+  if (slotKey === "necklace") return { atk: 5 * tier, def: 0, hp: 20 * tier + 2 * base };
+  return { atk: 5 * tier, def: 3 * tier, hp: 15 * tier + 1.5 * base };
+}
+
+function buildEquipTier(slotKey, tier, rarity) {
+  const row = EQUIP_SLOT_TABLE.find((item) => item.key === slotKey);
+  const raw = equipStatBase(slotKey, tier);
+  const mult = rarity.mult;
+  return {
+    id: slotKey + "-" + tier + "-" + rarity.key,
+    name: EQUIP_TIER_NAMES[tier - 1] + (row ? row.suffix : ""),
+    slot: slotKey,
+    tier,
+    rarity: rarity.key,
+    rarityName: rarity.name,
+    atk: Math.round(raw.atk * mult),
+    def: Math.round(raw.def * mult),
+    hp: Math.round(raw.hp * mult)
+  };
+}
+
+const EQUIPMENTS = {};
+EQUIP_ITEM_SLOTS.forEach((slotKey) => {
+  EQUIPMENTS[slotKey] = [];
+  for (let tier = 1; tier <= EQUIP_TIER_COUNT; tier += 1) {
+    EQUIP_RARITIES.forEach((rarity) => {
+      EQUIPMENTS[slotKey].push(buildEquipTier(slotKey, tier, rarity));
+    });
+  }
+});
+
+// 历练：三十层副本，第 N 层掉 1~N 阶装备；门槛境界按层数平摊到二十重境界上
+// 背包格数：满了就不再收新装备，掉落改化尘折灵石
+const BAG_CAPACITY = 120;
+const DUST_STONE_BASE = 6;
+const DUST_STONE_PER_TIER = 2;
+
+const DUNGEON_COUNT = 30;
+const DUNGEON_STONE_BASE = 12;      // 每层基础灵石
+const DUNGEON_STONE_PER_TIER = 4;   // 每层的层数加成
+
+// 人物五维里除攻防之外的三项：速度、暴击、气运
+const BASE_SPEED = 10;
+const BASE_CRIT = 5;                 // 百分比
+const BASE_LUCK = 5;
+const CRIT_CAP = 95;                 // 暴击顶到 95% 就封顶
+const SPEED_PER_STAGE = 2;
+const SPEED_PER_ROOT = 3;
+const SPEED_PER_BOOT_TIER = 2;
+const CRIT_PER_WEAPON_TIER = 1.5;
+const VARIANT_CRIT_BONUS = 6;
+const CHAOS_CRIT_BONUS = 10;
+const LUCK_PER_REBIRTH = 3;
+const LUCK_PER_QUALITY = 0.05;       // 平均资质每点折合的运气
+const LUCK_TO_RATE = 0.002;          // 每点气运给突破成功率加多少
+
+// 轮回：至少到金丹初期才谈得上转世，每一世永久加强修为速度
+const REBIRTH_MIN_STAGE = 12;
+const REBIRTH_BONUS_PER_LIFE = 0.15;
+
+/* =========================================================================
+   三、把配置展开成一维境界链：每个境界的每一重都是数组里的一项
+   好处：判断“下一重是谁”只要 index + 1，不用写几十个 if
+   ========================================================================= */
+function buildStages(table) {
+  const stages = [];
+  table.forEach((realm) => {
+    realm.stages.forEach((suffix, stageIndex) => {
+      const isLastOfRealm = stageIndex === realm.stages.length - 1;
+      const isEnd = realm.needStart === null || (realm.lastStageIsEnd && isLastOfRealm);
+      stages.push({
+        id: stages.length,
+        realm: realm.name,
+        name: realm.name + suffix,
+        need: isEnd ? null : Math.round(realm.needStart * Math.pow(realm.growth, stageIndex)),
+        rate: Math.max(realm.minRate, realm.rateStart - realm.rateDecay * stageIndex),
+        lossRatio: realm.lossRatio,
+        bonus: realm.bonus,
+        gainPerSec: realm.gainPerSec,
+        isTrial: Boolean(realm.isTrial),
+        fallbackStages: realm.fallbackStages || 0
+      });
+    });
+  });
+  return stages;
+}
+
+const STAGES = buildStages(REALM_TABLE);
+const LAST_STAGE_ID = STAGES.length - 1;
+
+/* =========================================================================
+   三-2、功法配置：天、地、玄、黄四阶，每阶八本
+   tier        品阶
+   grade       上中下品，同阶内的强弱
+   gain        打坐修为增速加成（0.30 就是 +30%）
+   atk/def/hp  固定属性加成，与境界加成叠加
+   rate        突破成功率加成
+   ========================================================================= */
+/* =========================================================================
+   三-1、属性表：灵根与功法共用的攻防血偏向
+   ========================================================================= */
+const ELEMENTS = {
+  金: { atk: 1.5, def: 1.2, hp: 0.8 },
+  木: { atk: 0.9, def: 1.0, hp: 1.5 },
+  水: { atk: 0.9, def: 1.3, hp: 1.2 },
+  火: { atk: 1.6, def: 0.8, hp: 0.9 },
+  土: { atk: 0.8, def: 1.6, hp: 1.4 },
+  风: { atk: 1.3, def: 0.9, hp: 0.9 },
+  雷: { atk: 1.8, def: 0.8, hp: 0.7 },
+  光: { atk: 1.2, def: 1.3, hp: 1.1 },
+  暗: { atk: 1.4, def: 1.1, hp: 0.9 },
+  混沌: { atk: 1.5, def: 1.5, hp: 1.5 }
+};
+
+const TECH_TIERS = [
+  { key: "黄", label: "黄阶", unlockName: "练气一层", grade: "下品", gain: 0.15, atk: 6, def: 4, hp: 30, rate: 0.02 },
+  { key: "玄", label: "玄阶", unlockName: "筑基一层", grade: "中品", gain: 0.45, atk: 18, def: 14, hp: 110, rate: 0.05 },
+  { key: "地", label: "地阶", unlockName: "合体一层", grade: "上品", gain: 1.10, atk: 55, def: 42, hp: 480, rate: 0.10 },
+  { key: "天", label: "天阶", unlockName: "大乘一层", grade: "极品", gain: 2.60, atk: 150, def: 110, hp: 1600, rate: 0.18 }
+];
+
+// 每个属性的四本功法，顺序对应 黄 / 玄 / 地 / 天
+const ELEMENT_TECH_NAMES = {
+  金: ["庚金淬锋诀", "太白庚金章", "金阙斩仙录", "太初庚金真解"],
+  木: ["青木养元功", "乙木长生章", "万木回春录", "建木通天经"],
+  水: ["玄水润灵诀", "壬水玄溟章", "弱水三千录", "归墟玄水真解"],
+  火: ["赤炎焚心诀", "离火明王章", "焚天赤炎录", "太阳真火真解"],
+  土: ["厚土载物功", "戊土镇岳章", "山河社稷录", "中央厚土真解"],
+  风: ["流风踏虚诀", "巽风无常章", "九天罡风录", "太虚风篆真解"],
+  雷: ["惊雷淬体诀", "震雷紫电章", "九霄雷狱录", "雷帝灭世真解"],
+  光: ["明光炼神诀", "曦光普照章", "大日琉璃录", "无量光明真解"],
+  暗: ["幽暗藏形诀", "玄阴噬魂章", "九幽无光录", "永夜寂灭真解"],
+  混沌: ["鸿蒙初开诀", "混元一气章", "混沌无极录", "太初衍道真解"]
+};
+
+// 四阶 × 十属性 = 四十本，每本挂在它对应的属性上，效果按该属性的偏向微调
+const TECH_TABLE = [];
+TECH_TIERS.forEach((tier, tierIndex) => {
+  Object.keys(ELEMENT_TECH_NAMES).forEach((element) => {
+    const mul = ELEMENTS[element];
+    TECH_TABLE.push({
+      tier: tier.key,
+      grade: tier.grade,
+      element,
+      name: ELEMENT_TECH_NAMES[element][tierIndex],
+      gain: tier.gain,
+      atk: Math.round(tier.atk * mul.atk),
+      def: Math.round(tier.def * mul.def),
+      hp: Math.round(tier.hp * mul.hp),
+      rate: tier.rate
+    });
+  });
+});
+
+// 按境界名查出这一重是第几重；查不到就当作最早期可修，不让功法无解
+function findStageIdByName(stageName) {
+  const found = STAGES.find((stage) => stage.name === stageName);
+  return found ? found.id : 0;
+}
+
+// 给每本功法补上 id 和“从第几重起可参悟”
+const TECHS = TECH_TABLE.map((tech, index) => {
+  const tier = TECH_TIERS.find((item) => item.key === tech.tier);
+  return Object.assign({}, tech, {
+    id: index,
+    unlockStageId: findStageIdByName(tier ? tier.unlockName : "")
+  });
+});
+
+// 功法只取“灵根里有的属性”那一本：一副灵根有几种属性，每阶就有几本可修
+function techsOfTier(tierKey) {
+  const owned = rootElements().map(elementKey);
+  return TECHS.filter((tech) => tech.tier === tierKey && owned.includes(tech.element));
+}
+
+/* =========================================================================
+   三-3、灵根：开局随机一副，可无限刷新
+   一副灵根由 1~5 个“属性”组成，属性写在圆圈里，右上角写品阶
+   · 纯五行（金木水火土）：1 个天灵根，2 个双灵根，3 个三灵根，4 个四灵根，5 个杂灵根
+   · 含变异属性（风雷光暗）：不论单独出现还是搭配一个五行，都算变异灵根
+   · 混沌：只单独出现，不与任何属性搭配，算混沌灵根
+   资质 1~100，品阶决定能刷出的资质区间；资质 ÷ 20 = 加成点数
+   ========================================================================= */
+const FIVE_ELEMENTS = ["金", "木", "水", "火", "土"];
+const VARIANT_ELEMENTS = ["风", "雷", "光", "暗"];
+
+// 每个品阶能刷出的资质区间：品阶越好，起点越高
+const GRADE_QUALITY = {
+  混沌灵根: [80, 100],
+  变异灵根: [55, 100],
+  天灵根: [75, 100],
+  双灵根: [60, 95],
+  三灵根: [45, 90],
+  四灵根: [30, 85],
+  杂灵根: [15, 75]
+};
+
+const CHAOS_CHANCE = 0.02;          // 混沌灵根，独一份
+const VARIANT_ALONE_CHANCE = 0.14;  // 单独一个变异属性
+const VARIANT_MIX_CHANCE = 0.12;    // 变异属性 + 一个五行
+
+// 纯五行组合时出现几个属性：越少越好，也越难刷
+const FIVE_COUNT_WEIGHTS = [
+  { count: 1, weight: 6 },
+  { count: 2, weight: 20 },
+  { count: 3, weight: 30 },
+  { count: 4, weight: 26 },
+  { count: 5, weight: 18 }
+];
+
+const QUALITY_PER_SPEED = 20;   // 20 分资质 = 1.0 倍修行速度（100 分 = 5.0）
+const QUALITY_PER_ATTR = 50;    // 50 分资质 = 属性原样 1.0 倍，100 分 = 2 倍
+
+/* =========================================================================
+   四、游戏状态：只有这一个对象，界面上的数字全部由它算出来（单一数据源）
+   ========================================================================= */
+function createInitialState() {
+  return {
+    started: false,
+    name: "无名散修",
+    gender: "男",
+    rootElements: [],
+    rootQuality: 0,
+    rootRolls: 0,
+    stage: 0,
+    cultivation: 0,
+    attack: BASE_ATTACK,
+    defense: BASE_DEFENSE,
+    hp: BASE_HP,
+    stones: 0,
+    meditating: true,
+    techId: null,
+    startedAt: 0,
+    history: [],
+    log: [],
+    pills: {},
+    breakBonus: 0,
+    speedUntil: 0,
+    rebirths: 0,
+    partner: null,
+    treasures: [],
+    treasureId: null,
+    equips: [],
+    cleared: [],
+    equipIds: {
+      weapon: null, helmet: null, armor: null, bracer: null,
+      boots: null, necklace: null, ring1: null, ring2: null
+    }
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.stage !== "number" || parsed.stage < 0) return null;
+    const merged = Object.assign(createInitialState(), parsed, {
+      log: parsed.log || [],
+      history: Array.isArray(parsed.history) ? parsed.history : []
+    });
+    if (typeof merged.startedAt !== "number") merged.startedAt = 0;
+    // 老存档没有生平记录时保持空表，页面上给出说明，不伪造日期
+    if (!merged.pills || typeof merged.pills !== "object") merged.pills = {};
+    if (typeof merged.breakBonus !== "number") merged.breakBonus = 0;
+    if (typeof merged.speedUntil !== "number") merged.speedUntil = 0;
+    if (typeof merged.rebirths !== "number") merged.rebirths = 0;
+    // 老存档没有道侣字段，或存的是已不存在的 id，都按未结缘处理
+    // 支持多道侣：老存档的字符串转为数组，新存档直接是数组
+    if (Array.isArray(merged.partner)) {
+      merged.partner = merged.partner.filter((id) => PARTNERS[id]);
+    } else if (typeof merged.partner === "string" && PARTNERS[merged.partner]) {
+      merged.partner = [merged.partner];
+    } else {
+      merged.partner = [];
+    }
+    // 法宝与装备同样兜底：只认配置表里还存在的 id，旧存档缺字段就当没买过
+    merged.treasures = Array.isArray(merged.treasures)
+      ? merged.treasures.filter((id) => TREASURES[id])
+      : [];
+    if (!TREASURES[merged.treasureId]) merged.treasureId = null;
+    merged.equips = Array.isArray(merged.equips)
+      ? merged.equips.filter((id) => {
+        const slot = String(id).split("-")[0];
+        return equipItemById(slot, id) !== null;
+      })
+      : [];
+    merged.cleared = Array.isArray(merged.cleared) ? merged.cleared : [];
+    const equipIds = merged.equipIds && typeof merged.equipIds === "object" ? merged.equipIds : {};
+    const cleanEquipIds = {};
+    EQUIP_SLOT_ORDER.forEach((slot) => {
+      const id = equipIds[slot];
+      const owned = equipItemById(slot, id);
+      // 没打到过的装备不能凭空穿上；同一只戒指不许同时占两只手
+      const dupRing = owned && owned.slot === "ring"
+        && EQUIP_SLOT_ORDER.some((other) => other !== slot && cleanEquipIds[other] === id);
+      cleanEquipIds[slot] = owned && !dupRing && merged.equips.indexOf(id) >= 0 ? id : null;
+    });
+    merged.equipIds = cleanEquipIds;
+    // 老存档没有 started 字段，有进度就说明早在玩了，不要把他打回开局页
+    if (typeof parsed.started !== "boolean") merged.started = true;
+    // 老存档没有灵根资质，补一个 50 分；灵根格式对不上（旧版的单属性字段）就重抽一副
+    if (typeof parsed.rootQuality !== "number") merged.rootQuality = 50;
+    if (!Array.isArray(merged.rootElements) || merged.rootElements.length === 0) {
+      const roll = pickRootRoll();
+      merged.rootElements = roll.elements;
+      merged.rootQuality = roll.quality;
+    } else {
+      // 上一版存的是纯字符串数组，补成“属性 + 各自资质”的形式
+      merged.rootElements = merged.rootElements.map((item) => (
+        typeof item === "string"
+          ? { key: item, quality: merged.rootQuality || 50 }
+          : item
+      ));
+    }
+    return merged;
+  } catch (error) {
+    // 存档坏了就当没存档，不要让整个游戏打不开
+    console.error("读取存档失败", error);
+    return null;
+  }
+}
+
+let state = loadState() || createInitialState();
+
+/* =========================================================================
+   五、DOM 引用：一开始取一次，之后都复用，避免每次重绘都重新找元素
+   ========================================================================= */
+const el = {
+  realmName: document.getElementById("realmName"),
+  realmCount: document.getElementById("realmCount"),
+  cultText: document.getElementById("cultText"),
+  barFill: document.getElementById("barFill"),
+  barTrack: document.getElementById("barTrack"),
+  gainNote: document.getElementById("gainNote"),
+  atk: document.getElementById("statAtk"),
+  def: document.getElementById("statDef"),
+  hp: document.getElementById("statHp"),
+  stone: document.getElementById("statStone"),
+  meditateBtn: document.getElementById("meditateBtn"),
+  breakBtn: document.getElementById("breakBtn"),
+  injectBtn: document.getElementById("injectBtn"),
+  riskNote: document.getElementById("riskNote"),
+  dungeonSummary: document.getElementById("dungeonSummary"),
+  dungeonGrid: document.getElementById("dungeonGrid"),
+  dungeonResult: document.getElementById("dungeonResult"),
+  caveGrid: document.getElementById("caveGrid"),
+  partnerSummary: document.getElementById("partnerSummary"),
+  partnerGrid: document.getElementById("partnerGrid"),
+  partnerNote: document.getElementById("partnerNote"),
+  bagGrid: document.getElementById("bagGrid"),
+  bagEquipArea: document.getElementById("bagEquipArea"),
+  bagScene: document.getElementById("bagScene"),
+  bagSceneWorn: document.getElementById("bagSceneWorn"),
+  bagScenePower: document.getElementById("bagScenePower"),
+  bagSceneStore: document.getElementById("bagSceneStore"),
+  bagNote: document.getElementById("bagNote"),
+  autoEquipBtn: document.getElementById("autoEquipBtn"),
+  attrList: document.getElementById("attrList"),
+  shopGrid: document.getElementById("shopGrid"),
+  shopStone: document.getElementById("shopStone"),
+  rebirthSummary: document.getElementById("rebirthSummary"),
+  rebirthNote: document.getElementById("rebirthNote"),
+  rebirthBtn: document.getElementById("rebirthBtn"),
+  techLine: document.getElementById("techLine"),
+  playerLine: document.getElementById("playerLine"),
+  tierTabs: document.getElementById("tierTabs"),
+  techGrid: document.getElementById("techGrid"),
+  navBar: document.getElementById("navBar"),
+  topBar: document.getElementById("topBar"),
+  topName: document.getElementById("topName"),
+  topRealm: document.getElementById("topRealm"),
+  topStone: document.getElementById("topStone"),
+  nameInput: document.getElementById("nameInput"),
+  genderRow: document.getElementById("genderRow"),
+  rootOrbs: document.getElementById("rootOrbs"),
+  rootGrade: document.getElementById("rootGrade"),
+  rootBonus: document.getElementById("rootBonus"),
+  rerollBtn: document.getElementById("rerollBtn"),
+  rootRolls: document.getElementById("rootRolls"),
+  startBtn: document.getElementById("startBtn"),
+  startNote: document.getElementById("startNote"),
+  toast: document.getElementById("toast")
+};
+
+/* =========================================================================
+   六、工具函数
+   ========================================================================= */
+function currentStage() {
+  return STAGES[Math.min(state.stage, LAST_STAGE_ID)];
+}
+
+// 当前主修的功法；没参悟过、或灵根里已没有这本的属性，都返回 null
+function activeTech() {
+  if (state.techId === null) return null;
+  const tech = TECHS.find((item) => item.id === state.techId);
+  if (!tech) return null;
+  return rootElements().map(elementKey).includes(tech.element) ? tech : null;
+}
+
+// 功法加成。没有主修时返回全 0，这样下面的计算不用到处判空
+function techBonus() {
+  const tech = activeTech();
+  if (!tech) return { gain: 0, atk: 0, def: 0, hp: 0, rate: 0 };
+  return tech;
+}
+
+// 当前灵根由哪些属性组成，每项形如 { key: "水", quality: 72 }
+function rootElements() {
+  return Array.isArray(state.rootElements) ? state.rootElements : [];
+}
+
+function elementKey(item) {
+  return typeof item === "string" ? item : item.key;
+}
+
+// 品阶由组合推出来：含混沌=混沌灵根，含变异=变异灵根，纯五行按个数定级
+function rootGrade(list) {
+  const elements = list || rootElements();
+  if (elements.length === 0) return "";
+  const keys = elements.map(elementKey);
+  if (keys.includes("混沌")) return "混沌灵根";
+  if (keys.some((key) => VARIANT_ELEMENTS.includes(key))) return "变异灵根";
+  const gradeByCount = ["天灵根", "双灵根", "三灵根", "四灵根", "杂灵根"];
+  return gradeByCount[Math.min(keys.length, 5) - 1];
+}
+
+// 每个属性各有自己的资质，取平均作为整副灵根的资质
+function rootAverageQuality() {
+  const elements = rootElements();
+  if (elements.length === 0) return Math.max(1, state.rootQuality || 1);
+  const total = elements.reduce((sum, item) => sum + (typeof item === "string" ? state.rootQuality : item.quality), 0);
+  return total / elements.length;
+}
+
+// 资质换算成修行速度倍率：资质 ÷ 20，100 分 = 5.0 倍
+function rootPoints() {
+  return Math.max(1, rootAverageQuality()) / QUALITY_PER_SPEED;
+}
+
+// 属性偏向取组成属性的平均值：单属性最极端，五属性趋于均衡
+function rootMuls() {
+  const elements = rootElements();
+  if (elements.length === 0) return { atkMul: 1, defMul: 1, hpMul: 1 };
+
+  const sum = elements.reduce((acc, item) => {
+    const mul = ELEMENTS[elementKey(item)];
+    return { atk: acc.atk + mul.atk, def: acc.def + mul.def, hp: acc.hp + mul.hp };
+  }, { atk: 0, def: 0, hp: 0 });
+
+  return {
+    atkMul: sum.atk / elements.length,
+    defMul: sum.def / elements.length,
+    hpMul: sum.hp / elements.length
+  };
+}
+
+// 三项属性同样用乘法：元素偏向 × 资质系数（资质 ÷ 50，50 分即原样 1.0 倍）
+function rootAttrMuls() {
+  const muls = rootMuls();
+  const qualityScale = Math.max(1, rootAverageQuality()) / QUALITY_PER_ATTR;
+  return {
+    atk: muls.atkMul * qualityScale,
+    def: muls.defMul * qualityScale,
+    hp: muls.hpMul * qualityScale
+  };
+}
+
+function equipBonus() {
+  const total = { atk: 0, def: 0, hp: 0 };
+  EQUIP_SLOT_ORDER.forEach((slot) => {
+    const item = equipItemById(slot, state.equipIds[slot]);
+    if (!item) return;
+    EQUIP_BONUS_FIELDS.forEach((field) => {
+      total[field] += item[field] || 0;
+    });
+  });
+  return total;
+}
+
+// 法宝与装备的加成汇总：表格里配多少就加多少，逻辑里不写死数字
+function gearBonus() {
+  const total = { atk: 0, def: 0, hp: 0 };
+  const treasure = TREASURES[state.treasureId];
+  const pieces = [];
+  if (treasure) pieces.push(treasure);
+  EQUIP_SLOT_ORDER.forEach((slot) => {
+    const item = equipItemById(slot, state.equipIds[slot]);
+    if (item) pieces.push(item);
+  });
+  pieces.forEach((piece) => {
+    EQUIP_BONUS_FIELDS.forEach((field) => {
+      total[field] += piece[field] || 0;
+    });
+  });
+  return total;
+}
+
+function equipItemById(slot, id) {
+  if (!id) return null;
+  const pool = EQUIPMENTS[EQUIP_POOL_BY_SLOT[slot] || slot] || [];
+  return pool.find((item) => item.id === id) || null;
+}
+
+function totalAttack() {
+  return (state.attack + techBonus().atk + gearBonus().atk) * rootAttrMuls().atk;
+}
+
+function totalDefense() {
+  return (state.defense + techBonus().def + gearBonus().def) * rootAttrMuls().def;
+}
+
+function totalHp() {
+  return (state.hp + techBonus().hp + gearBonus().hp) * rootAttrMuls().hp;
+}
+
+// 五维：攻击与防御照旧，速度、暴击、气运由境界、灵根、装备各自折算
+function playerStats() {
+  const stage = currentStage();
+  const rootAvg = rootAverageQuality();
+  const weapon = equipItemById("weapon", state.equipIds.weapon);
+  const boots = equipItemById("boots", state.equipIds.boots);
+  const hasChaos = rootElements().some((item) => item.key === "混沌");
+  const hasVariant = rootElements().some((item) => VARIANT_ELEMENTS.indexOf(item.key) >= 0);
+
+  const speed = BASE_SPEED + state.stage * SPEED_PER_STAGE
+    + Math.round(rootPoints() * SPEED_PER_ROOT)
+    + (boots ? boots.tier * SPEED_PER_BOOT_TIER : 0);
+
+  let crit = BASE_CRIT + (weapon ? weapon.tier * CRIT_PER_WEAPON_TIER : 0);
+  if (hasChaos) crit += CHAOS_CRIT_BONUS;
+  else if (hasVariant) crit += VARIANT_CRIT_BONUS;
+  crit = Math.min(CRIT_CAP, crit);
+
+  const luck = BASE_LUCK + state.rebirths * LUCK_PER_REBIRTH
+    + Math.round(rootAvg * LUCK_PER_QUALITY);
+
+  return { atk: totalAttack(), def: totalDefense(), speed, crit, luck };
+}
+
+// 气运与暴击在别处也要用，抽出来免得两处口径不一致
+function critChance() {
+  return playerStats().crit / PERCENT;
+}
+
+function luckFactor() {
+  return playerStats().luck;
+}
+
+// 打坐速度 = 境界基础速度 × 灵根倍率 ×（1 + 功法加成）×（1 + 轮回加成）×（1 + 道侣加成）× 丹药倍率
+function gainPerSecond() {
+  return currentStage().gainPerSec * rootPoints() * (1 + techBonus().gain)
+    * (1 + state.rebirths * REBIRTH_BONUS_PER_LIFE) * (1 + partnerRate()) * speedBuffMultiplier();
+}
+
+// 多道侣累加：未结缘就是 0，加成按配置表累加
+function partnerRate() {
+  if (!Array.isArray(state.partner)) return 0;
+  let total = 0;
+  state.partner.forEach((id) => {
+    if (PARTNERS[id]) total += PARTNERS[id].rate;
+  });
+  return total;
+}
+
+// 悟道丹还在有效期内就 ×2，否则 ×1
+function speedBuffMultiplier() {
+  return Date.now() < state.speedUntil ? SPEED_BUFF_MULT : 1;
+}
+
+// 实际突破成功率 = 境界基础成功率 + 功法加成 + 破境丹 + 气运带来的些许顺遂
+function effectiveRate() {
+  const raw = currentStage().rate + techBonus().rate + state.breakBonus + luckFactor() * LUCK_TO_RATE;
+  return Math.min(0.99, Math.max(0.01, raw));
+}
+
+function formatRatePerSecond(value) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}
+
+function formatNumber(value) {
+  return Math.floor(value).toLocaleString("zh-CN");
+}
+
+// 气运这类小数属性：整数就干写，有小数才带一位
+function stripTrailingZeros(value) {
+  const rounded = Math.round(value * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
+function formatPercent(ratio) {
+  return Math.round(ratio * PERCENT) + "%";
+}
+
+function addLog(text, kind) {
+  state.log.unshift({ text, kind: kind || "info", at: Date.now() });
+  state.log = state.log.slice(0, LOG_LIMIT);
+}
+
+// 生平：只记值得写进传记的事（入道、突破成败），时间用毫秒时间戳存
+function addHistory(text, kind) {
+  state.history.unshift({ text, kind: kind || "info", at: Date.now() });
+  state.history = state.history.slice(0, HISTORY_LIMIT);
+}
+
+let toastTimer = null;
+function showToast(message) {
+  el.toast.textContent = message;
+  el.toast.dataset.show = "true";
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    el.toast.dataset.show = "false";
+  }, 2200);
+}
+
+/* =========================================================================
+   七、渲染：只负责把 state 画到屏幕上，不修改任何游戏数据
+   ========================================================================= */
+function render() {
+  const stage = currentStage();
+
+  el.realmName.textContent = stage.name;
+  el.realmCount.textContent = "第 " + (state.stage + 1) + " 重 / 共 " + STAGES.length + " 重";
+
+  // 顶部状态条与卡片同步更新
+  el.topName.textContent = state.name;
+  el.topRealm.textContent = stage.name + " · 第 " + (state.stage + 1) + "/" + STAGES.length + " 重";
+  el.topStone.textContent = formatNumber(state.stones);
+
+  const tech = activeTech();
+  el.techLine.textContent = tech
+    ? "主修功法：" + tech.name + "（" + tech.tier + "阶" + tech.grade + "）"
+    : "主修功法：尚未参悟";
+
+  const rootList = rootElements();
+  el.playerLine.textContent = state.started
+    ? "道号：" + state.name + " · " + state.gender + " · "
+      + (rootList.length > 0
+        ? rootGrade() + "（" + rootList.map(elementKey).join("、") + "）· 资质 " + Math.round(rootAverageQuality())
+        : "灵根未定")
+    : "道号：尚未入道";
+
+  const need = stage.need;
+  if (need === null) {
+    el.cultText.textContent = formatNumber(state.cultivation) + " / 已至绝顶";
+    el.barFill.style.width = "100%";
+    el.barTrack.setAttribute("aria-valuenow", "100");
+    el.gainNote.textContent = "已是大乘，此界再无可破之境（每秒 +" + formatRatePerSecond(gainPerSecond()) + " 修为）";
+    el.riskNote.textContent = "";
+    el.breakBtn.textContent = "已在最高境界";
+    el.breakBtn.disabled = true;
+  } else {
+    const ratio = Math.min(1, state.cultivation / need);
+    el.cultText.textContent = formatNumber(state.cultivation) + " / " + formatNumber(need);
+    el.barFill.style.width = (ratio * PERCENT).toFixed(1) + "%";
+    el.barTrack.setAttribute("aria-valuenow", String(Math.round(ratio * PERCENT)));
+    el.gainNote.textContent = state.meditating
+      ? "打坐中：每秒 +" + formatRatePerSecond(gainPerSecond()) + " 修为"
+        + (tech ? "（功法 +" + formatPercent(tech.gain) + "）" : "")
+      : "已停止打坐，点“开始打坐”继续积累";
+    const riskText = stage.isTrial
+      ? "天劫凶险：失败将跌落至" + STAGES[Math.max(0, state.stage - stage.fallbackStages)].name
+      : (stage.lossRatio > 0
+        ? "突破失败将损失 " + formatPercent(stage.lossRatio) + " 修为"
+        : "");
+    const bonusNotes = [];
+    if (tech && tech.rate > 0) bonusNotes.push("功法加持 成功率 +" + formatPercent(tech.rate));
+    if (state.breakBonus > 0) bonusNotes.push("破境丹 成功率 +" + formatPercent(state.breakBonus));
+    el.riskNote.textContent = riskText + (bonusNotes.length > 0 ? "｜" + bonusNotes.join("｜") : "");
+
+    if (state.cultivation >= need) {
+      el.breakBtn.textContent = "尝试突破 · 成功率 " + formatPercent(effectiveRate());
+      el.breakBtn.disabled = false;
+    } else {
+      el.breakBtn.textContent = "尚需 " + formatNumber(need - state.cultivation) + " 修为";
+      el.breakBtn.disabled = true;
+    }
+  }
+
+  el.meditateBtn.textContent = state.meditating ? "停止打坐" : "开始打坐";
+  el.atk.textContent = formatNumber(totalAttack());
+  el.def.textContent = formatNumber(totalDefense());
+  el.hp.textContent = formatNumber(totalHp());
+  el.stone.textContent = formatNumber(state.stones);
+
+  renderTechs();
+  // 当前显示的页面要跟着状态刷新；不可见的页面不去动它，省得白重绘
+  if (!VIEWS.history.hidden) renderDungeon();
+  if (!VIEWS.shop.hidden) refreshShopButtons();
+  if (!VIEWS.rebirth.hidden) renderRebirth();
+  if (!VIEWS.cave.hidden) renderCave();
+  if (!VIEWS.attr.hidden) renderAttr();
+}
+
+// 历练页：三十层副本，第 N 层掉 1~N 阶装备
+function dungeonStageIndex(dungeonTier) {
+  // 把 1~30 层平摊到 0~19 重境界上：越深的副本要求越高的境界
+  return Math.round((dungeonTier - 1) * LAST_STAGE_ID / (DUNGEON_COUNT - 1));
+}
+
+function dungeonMinStage(dungeonTier) {
+  return dungeonStageIndex(dungeonTier);
+}
+
+// 该层对应的“参考战力”：按那一重境界的累计攻防血折算，副本强度就锚在境界上
+function dungeonPowerNeed(dungeonTier) {
+  const stageIndex = dungeonStageIndex(dungeonTier);
+  let atk = BASE_ATTACK;
+  let def = BASE_DEFENSE;
+  let hp = BASE_HP;
+  for (let i = 0; i < stageIndex; i += 1) {
+    atk += STAGES[i].bonus.atk;
+    def += STAGES[i].bonus.def;
+    hp += STAGES[i].bonus.hp;
+  }
+  return Math.round(atk + def * 0.6 + hp * 0.15);
+}
+
+function playerPower() {
+  return totalAttack() + totalDefense() * 0.6 + totalHp() * 0.15;
+}
+
+function dungeonTierLabel(tier) {
+  const nums = ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+  if (tier <= 10) return nums[tier - 1] + "阶";
+  if (tier < 20) return "十" + nums[tier - 11] + "阶";
+  if (tier === 20) return "二十阶";
+  if (tier < 30) return "二十" + nums[tier - 21] + "阶";
+  return "三十阶";
+}
+
+function renderDungeon() {
+  const renderKey = state.stage + "|" + state.cleared.length + "|" + state.stones;
+  if (ui.dungeonKey === renderKey) return;
+  ui.dungeonKey = renderKey;
+
+  renderLifeCellRow(el.dungeonSummary, [
+    { k: "已破副本", v: state.cleared.length + " / " + DUNGEON_COUNT },
+    { k: "当前战力", v: formatNumber(playerPower()) },
+    { k: "囊中灵石", v: formatNumber(state.stones) }
+  ]);
+
+  el.dungeonGrid.innerHTML = "";
+  for (let tier = 1; tier <= DUNGEON_COUNT; tier += 1) {
+    const minStage = dungeonMinStage(tier);
+    const locked = state.stage < minStage;
+    const cleared = state.cleared.indexOf(tier) >= 0;
+
+    const row = document.createElement("div");
+    row.className = "dungeon-row";
+
+    const left = document.createElement("div");
+    left.className = "dungeon-left";
+
+    const name = document.createElement("div");
+    name.className = "dungeon-name";
+    name.textContent = "第 " + tier + " 层" + (cleared ? " · 已破" : "");
+
+    const meta = document.createElement("div");
+    meta.className = "dungeon-meta";
+    meta.textContent = "掉落 1~" + tier + " 阶装备 · 需 " + STAGES[minStage].name;
+
+    left.appendChild(name);
+    left.appendChild(meta);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "dungeon-btn";
+    if (locked) {
+      btn.textContent = "未可入";
+      btn.disabled = true;
+    } else {
+      btn.textContent = "入内";
+      btn.addEventListener("click", () => enterDungeon(tier));
+    }
+
+    row.appendChild(left);
+    row.appendChild(btn);
+    el.dungeonGrid.appendChild(row);
+  }
+}
+
+// 品级越稀有权重越小，抽装备时按权重抽，金装最难出
+function pickWeightedPiece(pool) {
+  if (pool.length === 0) return null;
+  let total = 0;
+  pool.forEach((piece) => {
+    total += RARITY_BY_KEY[piece.rarity].weight;
+  });
+  let roll = Math.random() * total;
+  for (let i = 0; i < pool.length; i += 1) {
+    roll -= RARITY_BY_KEY[pool[i].rarity].weight;
+    if (roll <= 0) return pool[i];
+  }
+  return pool[pool.length - 1];
+}
+
+// 闯副本：按战力与所需战力的比值定胜负，赢了掉一件还没到手的装备
+function enterDungeon(tier) {
+  if (state.stage < dungeonMinStage(tier)) {
+    showToast("境界不足，先修炼到 " + STAGES[dungeonMinStage(tier)].name);
+    return;
+  }
+
+  const need = dungeonPowerNeed(tier);
+  const power = playerPower();
+  const stats = playerStats();
+  // 胜率由战力比打底，暴击与速度再各添一点：手快、出手狠的就更容易拿下
+  const winChance = Math.min(0.95, Math.max(0.12,
+    power / need * 0.75 + stats.crit / 200 + (stats.speed - BASE_SPEED) * 0.002));
+  const win = Math.random() < winChance;
+
+  if (!win) {
+    el.dungeonResult.textContent = "闯第 " + tier + " 层失利：此处妖物凶悍（需战力 "
+      + formatNumber(need) + "，你为 " + formatNumber(power) + "），且先退回修炼。";
+    addHistory("闯入第 " + tier + " 层，力有不逮，负伤而退。", "bad");
+    saveState();
+    showToast("第 " + tier + " 层失手");
+    return;
+  }
+
+  if (state.cleared.indexOf(tier) < 0) state.cleared.push(tier);
+  const rewardStones = DUNGEON_STONE_BASE + tier * DUNGEON_STONE_PER_TIER;
+  state.stones += rewardStones;
+
+  // 只掉还没到手的货色：先抽阶数（1~N），再按品级权重抽
+  let picked = null;
+  const tierRoll = randomInt(1, tier);
+  const lowestPool = [];
+  EQUIP_ITEM_SLOTS.forEach((slotKey) => {
+    EQUIPMENTS[slotKey].forEach((piece) => {
+      if (state.equips.indexOf(piece.id) >= 0) return;
+      if (piece.tier === tierRoll) lowestPool.push(piece);
+    });
+  });
+  picked = pickWeightedPiece(lowestPool);
+  if (!picked) {
+    const anyPool = [];
+    EQUIP_ITEM_SLOTS.forEach((slotKey) => {
+      EQUIPMENTS[slotKey].forEach((piece) => {
+        if (piece.tier <= tier && state.equips.indexOf(piece.id) < 0) anyPool.push(piece);
+      });
+    });
+    picked = pickWeightedPiece(anyPool);
+  }
+
+  let dropText = "此层已无可取之物，只得灵石 " + rewardStones + "。";
+  if (picked && state.equips.length >= BAG_CAPACITY) {
+    // 背包满了，新装备不占格，直接化尘折算灵石
+    const dust = DUST_STONE_BASE + picked.tier * DUST_STONE_PER_TIER;
+    state.stones += dust;
+    dropText = "背包已满，" + picked.name + "（" + picked.rarityName + "）化作器灵尘，折灵石 " + dust + "；另得灵石 " + rewardStones + "。";
+    picked = null;
+  }
+  if (picked) {
+    state.equips.push(picked.id);
+    dropText = "得" + picked.name + "（" + picked.rarityName + " · " + dungeonTierLabel(picked.tier)
+      + " · " + EQUIP_SLOTS[EQUIP_POOL_BY_SLOT[picked.slot]] + "，" + bonusText(picked) + "），另得灵石 " + rewardStones + "。";
+  }
+
+  el.dungeonResult.textContent = "破了第 " + tier + " 层。" + dropText;
+  addHistory("破第 " + tier + " 层副本。" + dropText, "good");
+  saveState();
+  showToast("破了第 " + tier + " 层");
+  ui.dungeonKey = "";
+  renderDungeon();
+  renderBag();
+  render();
+}
+
+// 生平里的时间要写清楚年月日与时分，只记时辰看不出是哪天
+function formatDateTime(timestamp) {
+  const date = new Date(timestamp);
+  const pad = (value) => String(value).padStart(2, "0");
+  return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate())
+    + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+}
+
+/* =========================================================================
+   七-1c、洞府 / 道侣 渲染
+   ========================================================================= */
+// 洞府里每一格的身份：图标、名字、去哪儿，都写在表里，加新入口只动这张表
+const CAVE_ENTRIES = [
+  { view: "shop", name: "商店", icon: "shop" },
+  { view: "partner", name: "道侣", icon: "partner" },
+  { view: "bag", name: "背包", icon: "bag" }
+];
+
+const CAVE_ICONS = {
+  shop: '<path d="M4 9h16l-1.2-4.4H5.2L4 9z"/><path d="M5 9v10h14V9"/><path d="M9.5 19v-5h5v5"/>',
+  partner: '<circle cx="9" cy="8.6" r="2.8"/><path d="M3.6 19.4c0-3 2.4-5 5.4-5s5.4 2 5.4 5"/><path d="M16.4 6.4a2.6 2.6 0 0 1 0 5.2"/><path d="M17.6 14.8c2 .5 3.2 2.2 3.2 4.6"/>',
+  pill: '<path d="M9 3.5h6v2.6l2.2 3.4V19a1.6 1.6 0 0 1-1.6 1.6H8.4A1.6 1.6 0 0 1 6.8 19V9.5L9 6.1V3.5z"/><path d="M6.8 12.4h10.4"/>',
+  treasure: '<path d="M12 3.5l3.6 5.4-3.6 5.1-3.6-5.1L12 3.5z"/><path d="M3 15.4h18"/><path d="M7.5 15.4v5.6"/><path d="M16.5 15.4v5.6"/>',
+  bag: '<path d="M6.5 8.4h11l-.8 10.2a1.6 1.6 0 0 1-1.6 1.5H8.9a1.6 1.6 0 0 1-1.6-1.5L6.5 8.4z"/><path d="M9.2 8.4V6.6a2.8 2.8 0 0 1 5.6 0v1.8"/>'
+};
+
+// 图标是固定常量串，不带任何用户数据，直接拼进 SVG 容器即可
+function makeCaveIcon(iconKey) {
+  const box = document.createElement("div");
+  box.className = "cave-icon";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = CAVE_ICONS[iconKey] || "";
+  box.appendChild(svg);
+  return box;
+}
+
+function caveMetaText(entry) {
+  if (entry.view === "shop") {
+    return "灵石 " + formatNumber(state.stones) + " · 三味丹药";
+  }
+  if (entry.view === "partner") {
+    const bondedList = Array.isArray(state.partner) ? state.partner : [];
+    const bonded = bondedList.length;
+    return bonded > 0
+      ? bondedList.map((id) => PARTNERS[id] ? PARTNERS[id].name : "").filter(Boolean).join("、") + " · 修行 ×" + (1 + partnerRate()).toFixed(2)
+      : "尚未结缘";
+  }
+  if (entry.view === "bag") {
+    const worn = EQUIP_SLOT_ORDER.filter((slot) => state.equipIds[slot]).length;
+    return "装备 " + state.equips.length + " 件 · 丹药 "
+      + PILL_ORDER.reduce((sum, pillId) => sum + pillCount(pillId), 0) + " 枚";
+  }
+  return "";
+}
+
+function caveMetaTone(entry) {
+  if (entry.view === "partner") {
+    const bonded = Array.isArray(state.partner) ? state.partner.length : 0;
+    return bonded > 0 ? "done" : "active";
+  }
+  if (entry.view === "bag") {
+    const worn = EQUIP_SLOT_ORDER.filter((slot) => state.equipIds[slot]).length;
+    return worn === EQUIP_SLOT_ORDER.length ? "done" : "";
+  }
+  return "";
+}
+
+function renderCave() {
+  const bondedList = Array.isArray(state.partner) ? state.partner : [];
+  const renderKey = state.stones + "|" + bondedList.join(",") + "|" + state.treasureId
+    + "|" + EQUIP_SLOT_ORDER.map((slot) => state.equipIds[slot] || "-").join(",")
+    + "|" + PILL_ORDER.map((pillId) => pillCount(pillId)).join(",");
+  if (ui.caveKey === renderKey) return;
+  ui.caveKey = renderKey;
+
+  el.caveGrid.innerHTML = "";
+  CAVE_ENTRIES.forEach((entry) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "cave-card";
+
+    const name = document.createElement("div");
+    name.className = "cave-name";
+    name.textContent = entry.name;
+
+    const meta = document.createElement("div");
+    meta.className = "cave-meta";
+    meta.textContent = caveMetaText(entry);
+    const tone = caveMetaTone(entry);
+    if (tone) meta.dataset.tone = tone;
+
+    card.appendChild(makeCaveIcon(entry.icon));
+    card.appendChild(name);
+    card.appendChild(meta);
+    card.addEventListener("click", () => {
+      window.location.hash = HASH_BY_VIEW[entry.view];
+      showView(entry.view);
+    });
+    el.caveGrid.appendChild(card);
+  });
+}
+
+function renderPartner() {
+  el.partnerSummary.innerHTML = "";
+  const bondedNames = Array.isArray(state.partner)
+    ? state.partner.map((id) => PARTNERS[id] ? PARTNERS[id].name : "").filter(Boolean).join("、")
+    : "";
+  const rows = [
+    { k: "已结缘道侣", v: bondedNames || "尚无" },
+    { k: "羁绊数量", v: (Array.isArray(state.partner) ? state.partner.length : 0) + " / 5" },
+    { k: "修行加成", v: "×" + (1 + partnerRate()).toFixed(2) }
+  ];
+  rows.forEach((row) => {
+    const cell = document.createElement("div");
+    cell.className = "life-cell";
+    const k = document.createElement("div");
+    k.className = "life-k";
+    k.textContent = row.k;
+    const v = document.createElement("div");
+    v.className = "life-v";
+    v.textContent = row.v;
+    cell.appendChild(k);
+    cell.appendChild(v);
+    el.partnerSummary.appendChild(cell);
+  });
+
+  el.partnerGrid.innerHTML = "";
+  PARTNER_ORDER.forEach((partnerId) => {
+    const partner = PARTNERS[partnerId];
+    const isMine = Array.isArray(state.partner) && state.partner.indexOf(partnerId) >= 0;
+
+    const item = document.createElement("div");
+    item.className = "pill-item";
+
+    const name = document.createElement("div");
+    name.className = "pill-name";
+    name.textContent = partner.name + " · " + partner.title;
+
+    const desc = document.createElement("div");
+    desc.className = "pill-desc";
+    desc.textContent = partner.line;
+
+    const rate = document.createElement("div");
+    rate.className = "pill-own";
+    rate.textContent = "修行速度 ×" + (1 + partner.rate).toFixed(2);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pill-btn";
+    if (isMine) {
+      btn.textContent = "已结缘 · 解除";
+      btn.addEventListener("click", () => unmeetPartner(partnerId));
+    } else {
+      const canBond = Array.isArray(state.partner) && state.partner.length < 5;
+      btn.textContent = canBond ? "结缘" : "羁绊已满";
+      btn.disabled = !canBond;
+      btn.addEventListener("click", () => meetPartner(partnerId));
+    }
+
+    item.appendChild(name);
+    item.appendChild(desc);
+    item.appendChild(rate);
+    item.appendChild(btn);
+    el.partnerGrid.appendChild(item);
+  });
+
+  el.partnerNote.textContent = Array.isArray(state.partner)
+    ? "可同时羁绊最多5位道侣，每位带来独立修行加成；已结缘的道侣可随时解除。转世重修时道侣相随，加成仍在。"
+    : "可同时羁绊最多5位道侣，每位带来独立修行加成；已结缘的道侣可随时解除。转世重修时道侣相随，加成仍在。";
+}
+
+// 结缘：最多可同时羁绊5位道侣，加成由配置表累加
+function meetPartner(partnerId) {
+  const partner = PARTNERS[partnerId];
+  if (!partner) return;
+  if (!Array.isArray(state.partner)) state.partner = [];
+  if (state.partner.length >= 5) {
+    showToast("已羁绊5位道侣，无法再结");
+    return;
+  }
+  if (state.partner.indexOf(partnerId) >= 0) {
+    showToast("已与" + partner.name + "结缘");
+    return;
+  }
+  state.partner.push(partnerId);
+  addHistory("与" + partner.name + "结为道侣，修行速度 ×" + (1 + partner.rate).toFixed(2) + "。", "info");
+  saveState();
+  showToast("与" + partner.name + "结为道侣");
+  renderPartner();
+  renderCave();
+  render();
+}
+
+// 解除结缘
+function unmeetPartner(partnerId) {
+  if (!Array.isArray(state.partner)) return;
+  const idx = state.partner.indexOf(partnerId);
+  if (idx < 0) return;
+  state.partner.splice(idx, 1);
+  const partner = PARTNERS[partnerId];
+  addHistory("与" + partner.name + "解除道侣关系。", "info");
+  saveState();
+  showToast("与" + partner.name + "解除道侣关系");
+  renderPartner();
+  renderCave();
+  render();
+}
+
+/* =========================================================================
+   七-1e、人物页：属性总览
+   ========================================================================= */
+function appendAttrGroup(container, title) {
+  const group = document.createElement("div");
+  group.className = "attr-group";
+  group.textContent = title;
+  container.appendChild(group);
+}
+
+function appendAttrRow(container, label, value, tone) {
+  const row = document.createElement("div");
+  row.className = "attr-row";
+  const k = document.createElement("div");
+  k.className = "attr-k";
+  k.textContent = label;
+  const v = document.createElement("div");
+  v.className = "attr-v";
+  v.textContent = value;
+  if (tone) v.dataset.tone = tone;
+  row.appendChild(k);
+  row.appendChild(v);
+  container.appendChild(row);
+}
+
+function renderAttr() {
+  const bondedList2 = Array.isArray(state.partner) ? state.partner : [];
+  const renderKey = [state.stage, state.techId, state.stones, bondedList2.join(","), state.treasureId,
+    EQUIP_SLOT_ORDER.map((slot) => state.equipIds[slot] || "-").join(","),
+    state.rebirths, state.meditating,
+    PILL_ORDER.map((pillId) => pillCount(pillId)).join(",")].join("|");
+  if (ui.attrKey === renderKey) return;
+  ui.attrKey = renderKey;
+
+  el.attrList.innerHTML = "";
+
+  // 人物页只留五维数值，来源拆分不写在这里，免得一行长得看不完
+  const stats = playerStats();
+  appendAttrRow(el.attrList, "攻击", formatNumber(stats.atk), "accent");
+  appendAttrRow(el.attrList, "防御", formatNumber(stats.def));
+  appendAttrRow(el.attrList, "速度", String(Math.round(stats.speed)));
+  appendAttrRow(el.attrList, "暴击", stats.crit.toFixed(1) + "%");
+  appendAttrRow(el.attrList, "气运", stripTrailingZeros(stats.luck), "good");
+}
+
+/* =========================================================================
+   七-1d、法宝 / 装备 渲染
+   ========================================================================= */
+function bonusText(piece) {
+  const parts = [];
+  if (piece.atk) parts.push("攻 +" + piece.atk);
+  if (piece.def) parts.push("防 +" + piece.def);
+  if (piece.hp) parts.push("血 +" + piece.hp);
+  return parts.length > 0 ? parts.join(" · ") : "无加成";
+}
+
+function renderLifeCellRow(container, rows) {
+  container.innerHTML = "";
+  rows.forEach((row) => {
+    const cell = document.createElement("div");
+    cell.className = "life-cell";
+    const k = document.createElement("div");
+    k.className = "life-k";
+    k.textContent = row.k;
+    const v = document.createElement("div");
+    v.className = "life-v";
+    v.textContent = row.v;
+    cell.appendChild(k);
+    cell.appendChild(v);
+    container.appendChild(cell);
+  });
+}
+
+// 未持有就先买下，再祭起；买过则直接换祭
+function useTreasure(treasureId) {
+  const treasure = TREASURES[treasureId];
+  if (!treasure || state.stage < treasure.minStage) return;
+  const owned = state.treasures.indexOf(treasureId) >= 0;
+  if (!owned) {
+    if (state.stones < treasure.price) {
+      showToast("灵石不足，先去坊市攒些");
+      return;
+    }
+    state.stones -= treasure.price;
+    state.treasures.push(treasureId);
+  }
+  state.treasureId = treasureId;
+  addHistory("祭起" + treasure.name + "，" + bonusText(treasure) + "。", "info");
+  saveState();
+  showToast("祭起" + treasure.name);
+  renderBag();
+  renderCave();
+  render();
+}
+
+// 戒指只有一个物品池，要靠这一格决定戴左手还是右手：先占空位，两只都满就换第一只
+function equipTargetSlot(piece) {
+  if (piece.slot !== "ring") return EQUIP_POOL_BY_SLOT[piece.slot] || piece.slot;
+  if (!state.equipIds.ring1) return "ring1";
+  if (!state.equipIds.ring2) return "ring2";
+  if (state.equipIds.ring1 === piece.id) return "ring1";
+  if (state.equipIds.ring2 === piece.id) return "ring2";
+  return "ring1";
+}
+
+// 换穿：只认已经到手的东西，没打过的一律穿不上
+function wearEquip(slot, itemId) {
+  const piece = equipItemById(slot, itemId);
+  if (!piece || state.equips.indexOf(itemId) < 0) return;
+  // 同一只戒指不能同时占两只手
+  if (piece.slot === "ring") {
+    const other = slot === "ring1" ? "ring2" : "ring1";
+    if (state.equipIds[other] === itemId) {
+      showToast("另一只手上正戴着一枚同样的戒指");
+      return;
+    }
+  }
+  state.equipIds[slot] = itemId;
+  addHistory("换上" + piece.name + "（" + EQUIP_SLOTS[slot] + "），" + bonusText(piece) + "。", "info");
+  saveState();
+  showToast("换上" + piece.name);
+  renderBag();
+  renderCave();
+  render();
+}
+
+/* =========================================================================
+   七-1b、商店 / 丹药 / 轮回 渲染
+   ========================================================================= */
+function renderShop() {
+  el.shopStone.textContent = formatNumber(state.stones);
+
+  el.shopGrid.innerHTML = "";
+  PILL_ORDER.forEach((pillId) => {
+    const pill = PILLS[pillId];
+
+    const item = document.createElement("div");
+    item.className = "shop-item";
+
+    const name = document.createElement("div");
+    name.className = "shop-name";
+    name.textContent = pill.name;
+
+    const desc = document.createElement("div");
+    desc.className = "shop-desc";
+    desc.textContent = pill.desc;
+
+    const price = document.createElement("div");
+    price.className = "shop-price";
+    price.textContent = "灵石 " + pill.price;
+
+    const own = document.createElement("div");
+    own.className = "shop-own";
+    own.textContent = "已存 " + pillCount(pillId) + " 枚";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "shop-btn";
+    btn.dataset.pill = pillId;
+    btn.textContent = "买下";
+    btn.disabled = state.stones < pill.price;
+    btn.addEventListener("click", () => buyPill(pillId));
+
+    item.appendChild(name);
+    item.appendChild(desc);
+    item.appendChild(price);
+    item.appendChild(own);
+    item.appendChild(btn);
+    el.shopGrid.appendChild(item);
+  });
+}
+
+// 灵石变动时只改按钮可用状态，不重建整页，避免每次重绘都闪一下
+function refreshShopButtons() {
+  el.shopStone.textContent = formatNumber(state.stones);
+  Array.from(el.shopGrid.querySelectorAll(".shop-btn")).forEach((btn) => {
+    const pill = PILLS[btn.dataset.pill];
+    btn.disabled = !pill || state.stones < pill.price;
+  });
+}
+
+/* =========================================================================
+   七-1f、背包：装备 / 丹药 / 法宝 三卷合一
+   ========================================================================= */
+// 各部位的线性图标，风格与底部导航一致，一条 path 说清是什么东西
+const EQUIP_SLOT_ICONS = {
+  weapon: '<path d="M6 18.6 16.6 8"/><path d="M14.4 5.4 18.6 9.6"/><path d="M5.2 16.6 7.6 19"/>',
+  helmet: '<path d="M5 14.4h14"/><path d="M6.6 14.4V10a5.4 5.4 0 0 1 10.8 0v4.4"/>',
+  armor: '<path d="M9 4.4 5.4 6.6v9.8a3 3 0 0 0 3 3h7.2a3 3 0 0 0 3-3V6.6L15 4.4"/><path d="M9 4.4 12 7.4 15 4.4"/>',
+  bracer: '<circle cx="12" cy="12" r="5.6"/><path d="M12 6.4v11.2"/><path d="M6.4 12h11.2"/>',
+  boots: '<path d="M8.4 4.6v7.6l-2.8 2.2v4.8h12.8v-3.6l-4.2-2.2V4.6z"/>',
+  necklace: '<path d="M4.6 7.6a7.4 7.4 0 0 0 14.8 0"/><circle cx="12" cy="15.4" r="2.4"/>',
+  ring: '<circle cx="12" cy="13.4" r="4.6"/><path d="M9.4 6.6h5.2l1.4-2.2H8z"/>'
+};
+
+function makeBagIcon(slotKey) {
+  const box = document.createElement("div");
+  box.className = "bag-card-icon";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = EQUIP_SLOT_ICONS[slotKey] || "";
+  box.appendChild(svg);
+  return box;
+}
+
+function appendBagCard(card, container) {
+  const target = container || el.bagGrid;
+  const box = document.createElement("button");
+  box.type = "button";
+  box.className = "bag-card";
+  if (card.empty) box.dataset.empty = "true";
+  if (card.disabled) box.disabled = true;
+
+  const top = document.createElement("div");
+  top.className = "bag-card-top";
+  top.textContent = card.top;
+  if (card.rarity) top.dataset.rarity = card.rarity;
+
+  const name = document.createElement("div");
+  name.className = "bag-card-name";
+  name.textContent = card.name;
+  if (card.rarity) name.dataset.rarity = card.rarity;
+
+  const sub = document.createElement("div");
+  sub.className = "bag-card-sub";
+  sub.textContent = card.sub;
+
+  const foot = document.createElement("div");
+  foot.className = "bag-card-foot";
+  foot.textContent = card.foot;
+  if (card.footOn) foot.dataset.on = "true";
+
+  box.appendChild(top);
+  if (card.icon) box.appendChild(makeBagIcon(card.icon));
+  box.appendChild(name);
+  box.appendChild(sub);
+  box.appendChild(foot);
+  if (card.onClick && !card.disabled) box.addEventListener("click", card.onClick);
+  target.appendChild(box);
+}
+
+function makeBagSectionTitle(title, meta) {
+  const row = document.createElement("div");
+  row.className = "bag-section-title";
+  const name = document.createElement("b");
+  name.textContent = title;
+  const info = document.createElement("span");
+  info.textContent = meta;
+  row.appendChild(name);
+  row.appendChild(info);
+  return row;
+}
+
+function renderBagEquip() {
+  const wornCount = EQUIP_SLOT_ORDER.filter((slot) => state.equipIds[slot]).length;
+  el.bagEquipArea.innerHTML = "";
+
+  // 上半：身上穿着的那一套，八格固定排好，缺哪格一眼看得见
+  el.bagEquipArea.appendChild(makeBagSectionTitle("已穿", wornCount + "/" + EQUIP_SLOT_ORDER.length + " 格"));
+  const wornGrid = document.createElement("div");
+  wornGrid.className = "bag-grid";
+  el.bagEquipArea.appendChild(wornGrid);
+
+  EQUIP_SLOT_ORDER.forEach((slot) => {
+    const piece = equipItemById(slot, state.equipIds[slot]);
+    appendBagCard({
+      top: EQUIP_SLOTS[slot],
+      icon: EQUIP_POOL_BY_SLOT[slot],
+      name: piece ? piece.name : "空",
+      rarity: piece ? piece.rarity : null,
+      sub: piece ? piece.rarityName + " · " + dungeonTierLabel(piece.tier) : "尚无",
+      foot: piece ? bonusText(piece) : "去历练里打一件",
+      footOn: Boolean(piece),
+      empty: !piece,
+      disabled: true
+    }, wornGrid);
+  });
+
+  // 下半：背包里的全部藏品，满 120 格就装不下，掉落化尘
+  const owned = state.equips
+    .map((id) => equipItemById(String(id).split("-")[0], id))
+    .filter((piece) => piece !== null)
+    .sort((left, right) => (EQUIP_ITEM_SLOTS.indexOf(left.slot) - EQUIP_ITEM_SLOTS.indexOf(right.slot))
+      || (right.tier - left.tier)
+      || (RARITY_BY_KEY[right.rarity].weight > RARITY_BY_KEY[left.rarity].weight ? -1 : 1));
+
+  el.bagEquipArea.appendChild(makeBagSectionTitle("背包",
+    owned.length + "/" + BAG_CAPACITY + " 格 · 满包掉落化尘"));
+
+  const storeGrid = document.createElement("div");
+  storeGrid.className = "bag-grid";
+  el.bagEquipArea.appendChild(storeGrid);
+
+  if (owned.length === 0) {
+    appendBagCard({ top: "藏品", name: "空空如也", sub: "去历练里打一件回来", foot: "去历练", empty: true, disabled: true }, storeGrid);
+  } else {
+    owned.forEach((piece) => {
+      const target = equipTargetSlot(piece);
+      const isWorn = EQUIP_SLOT_ORDER.some((slot) => state.equipIds[slot] === piece.id);
+      appendBagCard({
+        top: EQUIP_SLOTS[target] + " · " + piece.rarityName,
+        icon: piece.slot,
+        name: piece.name,
+        rarity: piece.rarity,
+        sub: dungeonTierLabel(piece.tier) + " · " + bonusText(piece),
+        foot: isWorn ? "已穿戴" : "换上",
+        footOn: isWorn,
+        disabled: isWorn,
+        onClick: () => wearEquip(target, piece.id)
+      }, storeGrid);
+    });
+  }
+
+  // 风景卡上的字随身上这一套走
+  if (el.bagSceneWorn) el.bagSceneWorn.textContent = "已穿 " + wornCount + "/" + EQUIP_SLOT_ORDER.length;
+  if (el.bagScenePower) el.bagScenePower.textContent = "战力 " + formatNumber(playerPower());
+  if (el.bagSceneStore) el.bagSceneStore.textContent = "背包 " + state.equips.length + "/" + BAG_CAPACITY + " 格";
+}
+
+function renderBagPills() {
+  PILL_ORDER.forEach((pillId) => {
+    const pill = PILLS[pillId];
+    const count = pillCount(pillId);
+    appendBagCard({
+      top: "丹药",
+      name: pill.name,
+      sub: "存货 " + count + " 枚",
+      foot: count > 0 ? "服下" : "存货不足",
+      footOn: count > 0,
+      disabled: count <= 0,
+      onClick: () => usePill(pillId)
+    });
+  });
+}
+
+function renderBagTreasure() {
+  TREASURE_ORDER.forEach((treasureId) => {
+    const treasure = TREASURES[treasureId];
+    const owned = state.treasures.indexOf(treasureId) >= 0;
+    const isActive = state.treasureId === treasureId;
+    const locked = state.stage < treasure.minStage;
+    appendBagCard({
+      top: "法宝",
+      name: treasure.name,
+      sub: bonusText(treasure),
+      foot: isActive ? "已祭" : locked ? "需 " + STAGES[treasure.minStage].name
+        : owned ? "祭起此宝" : "请回 · " + treasure.price + " 灵石",
+      footOn: isActive,
+      disabled: isActive || locked || (!owned && state.stones < treasure.price),
+      onClick: () => useTreasure(treasureId)
+    });
+  });
+}
+
+// 阶高优先、同阶品级高优先：拿它判断哪件更值得穿
+function isPieceBetter(candidate, current) {
+  if (!current) return true;
+  if (candidate.tier !== current.tier) return candidate.tier > current.tier;
+  return RARITY_BY_KEY[candidate.rarity].weight < RARITY_BY_KEY[current.rarity].weight;
+}
+
+function bestOwnedOfSlot(slotKey) {
+  return state.equips
+    .filter((id) => String(id).indexOf(slotKey + "-") === 0)
+    .map((id) => equipItemById(slotKey, id))
+    .filter((piece) => piece !== null)
+    .sort((left, right) => (right.tier - left.tier)
+      || (RARITY_BY_KEY[right.rarity].weight > RARITY_BY_KEY[left.rarity].weight ? -1 : 1));
+}
+
+// 一键换装：逐部位挑库存里最好的一件换上，戒指两只各取一枚
+function autoEquipBest() {
+  let changed = 0;
+  EQUIP_ITEM_SLOTS.forEach((slotKey) => {
+    if (slotKey === "ring") return;
+    const best = bestOwnedOfSlot(slotKey)[0];
+    const target = EQUIP_POOL_BY_SLOT[slotKey];
+    if (!best || target !== slotKey) return;
+    if (isPieceBetter(best, equipItemById(target, state.equipIds[target]))) {
+      state.equipIds[target] = best.id;
+      changed += 1;
+    }
+  });
+
+  // 戒指单独处理：取最好的两枚，分别顶到两只手上
+  const rings = bestOwnedOfSlot("ring");
+  ["ring1", "ring2"].forEach((slot, index) => {
+    const best = rings[index];
+    if (!best) return;
+    if (isPieceBetter(best, equipItemById(slot, state.equipIds[slot]))) {
+      state.equipIds[slot] = best.id;
+      changed += 1;
+    }
+  });
+
+  if (changed === 0) {
+    showToast("身上已是最好的一套");
+    return;
+  }
+  addHistory("一键换装，换上 " + changed + " 件。", "info");
+  saveState();
+  showToast("换上 " + changed + " 件");
+  renderBag();
+  renderCave();
+  render();
+}
+
+// 三卷共用一格网格，切页签只是换内容
+function renderBag() {
+  if (!el.bagGrid) return;
+  el.bagGrid.innerHTML = "";
+  if (ui.bagTab === "pills") renderBagPills();
+  else if (ui.bagTab === "treasure") renderBagTreasure();
+  else renderBagEquip();
+
+  Array.from(document.querySelectorAll(".bag-tab")).forEach((btn) => {
+    const isActive = btn.dataset.bag === ui.bagTab;
+    btn.dataset.active = String(isActive);
+    btn.setAttribute("aria-selected", String(isActive));
+  });
+
+  // 只有装备卷才有换装按钮；顺带把有几件能换算出来，直接写在按钮上
+  const isEquipTab = ui.bagTab !== "pills" && ui.bagTab !== "treasure";
+  if (el.bagScene) el.bagScene.hidden = !isEquipTab;
+  if (el.bagEquipArea) el.bagEquipArea.hidden = !isEquipTab;
+  if (el.bagGrid) el.bagGrid.hidden = isEquipTab;
+  el.autoEquipBtn.hidden = !isEquipTab;
+  let upgradeable = 0;
+  if (isEquipTab) {
+    EQUIP_ITEM_SLOTS.forEach((slotKey) => {
+      if (slotKey === "ring") return;
+      const target = EQUIP_POOL_BY_SLOT[slotKey];
+      const best = bestOwnedOfSlot(slotKey)[0];
+      if (best && isPieceBetter(best, equipItemById(target, state.equipIds[target]))) upgradeable += 1;
+    });
+    const rings = bestOwnedOfSlot("ring");
+    ["ring1", "ring2"].forEach((slot, index) => {
+      if (rings[index] && isPieceBetter(rings[index], equipItemById(slot, state.equipIds[slot]))) upgradeable += 1;
+    });
+    el.autoEquipBtn.textContent = upgradeable > 0 ? "自动替换（可换 " + upgradeable + " 件）" : "自动替换";
+    el.autoEquipBtn.disabled = upgradeable === 0;
+  }
+
+  const counts = "装备 " + state.equips.length + " 件 · 丹药 "
+    + PILL_ORDER.reduce((sum, pillId) => sum + pillCount(pillId), 0) + " 枚 · 法宝 "
+    + state.treasures.length + " 件";
+  el.bagNote.textContent = counts + "。装备从历练副本掉，丹药在坊市买，法宝以灵石请回；随身之物，转世不散。";
+}
+
+function renderRebirth() {
+  const renderKey = state.stage + "|" + state.rebirths;
+  if (ui.rebirthKey === renderKey) return;
+  ui.rebirthKey = renderKey;
+
+  el.rebirthSummary.innerHTML = "";
+  const speedPerLife = formatPercent(REBIRTH_BONUS_PER_LIFE);
+  const rows = [
+    { k: "已历轮回", v: state.rebirths + " 世" },
+    { k: "每世加成", v: "修行速度 +" + speedPerLife },
+    { k: "当前总加成", v: "+" + formatPercent(state.rebirths * REBIRTH_BONUS_PER_LIFE) }
+  ];
+  rows.forEach((row) => {
+    const cell = document.createElement("div");
+    cell.className = "life-cell";
+    const k = document.createElement("div");
+    k.className = "life-k";
+    k.textContent = row.k;
+    const v = document.createElement("div");
+    v.className = "life-v";
+    v.textContent = row.v;
+    cell.appendChild(k);
+    cell.appendChild(v);
+    el.rebirthSummary.appendChild(cell);
+  });
+
+  const canRebirth = state.stage >= REBIRTH_MIN_STAGE;
+  el.rebirthBtn.disabled = !canRebirth;
+  el.rebirthBtn.textContent = canRebirth ? "转世重修" : "需至 " + STAGES[REBIRTH_MIN_STAGE].name;
+  el.rebirthNote.textContent = "转世会散尽此身境界、修为与属性，保留灵石、丹药、灵根与道侣。"
+    + "每转一世，永久修行速度 +" + speedPerLife + "；若已服悟道丹，其效果会一并消散。"
+    + " 当前境界：" + currentStage().name + "。";
+}
+
+/* =========================================================================
+   七-2、功法阁渲染
+   ========================================================================= */
+const ui = {
+  // 已有主修功法时，默认就停在那本书所在的一阶
+  selectedTier: (activeTech() || {}).tier || TECH_TIERS[0].key,
+  techRenderKey: "",
+  dungeonKey: "",
+  rebirthKey: "",
+  caveKey: "",
+  attrKey: "",
+  bagTab: "equip",
+  gender: "男"
+};
+
+function renderTechTabs() {
+  if (el.tierTabs.childElementCount === 0) {
+    TECH_TIERS.forEach((tier) => {
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "tier-tab";
+      tab.dataset.tier = tier.key;
+      tab.setAttribute("role", "tab");
+
+      const label = document.createElement("span");
+      label.textContent = tier.label;
+
+      const stateText = document.createElement("span");
+      stateText.className = "tab-state";
+
+      tab.appendChild(label);
+      tab.appendChild(stateText);
+      tab.addEventListener("click", () => {
+        ui.selectedTier = tier.key;
+        renderTechs();
+      });
+      el.tierTabs.appendChild(tab);
+    });
+  }
+
+  el.tierTabs.querySelectorAll(".tier-tab").forEach((tab) => {
+    const tierKey = tab.dataset.tier;
+    const tier = TECH_TIERS.find((item) => item.key === tierKey);
+    const unlockStageId = findStageIdByName(tier.unlockName);
+    const unlocked = state.stage >= unlockStageId;
+    const isActive = tierKey === ui.selectedTier;
+
+    tab.dataset.active = String(isActive);
+    tab.setAttribute("aria-selected", String(isActive));
+    tab.querySelector(".tab-state").textContent = unlocked
+      ? "已可参悟"
+      : "需" + STAGES[unlockStageId].name;
+  });
+}
+
+// 只有境界、主修功法或灵根变化时才重建卡片，避免每半秒重绘一次造成闪烁
+function renderTechs() {
+  renderTechTabs();
+
+  const renderKey = state.stage + "|" + String(state.techId) + "|" + ui.selectedTier
+    + "|" + rootElements().map(elementKey).join("");
+  if (ui.techRenderKey === renderKey) return;
+  ui.techRenderKey = renderKey;
+
+  el.techGrid.innerHTML = "";
+
+  const list = techsOfTier(ui.selectedTier);
+  if (list.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "tech-empty";
+    empty.textContent = "灵根未显，暂无对应功法。";
+    el.techGrid.appendChild(empty);
+    return;
+  }
+
+  list.forEach((tech) => {
+    const card = document.createElement("div");
+    card.className = "tech";
+    const locked = state.stage < tech.unlockStageId;
+    card.dataset.locked = String(locked);
+    card.dataset.equipped = String(state.techId === tech.id);
+
+    const tierLine = document.createElement("div");
+    tierLine.className = "tech-tier";
+    tierLine.textContent = tech.tier + "阶" + tech.grade + " · " + tech.element + "灵根";
+
+    const nameLine = document.createElement("div");
+    nameLine.className = "tech-name";
+    nameLine.textContent = tech.name;
+
+    const gainLine = document.createElement("div");
+    gainLine.className = "tech-gain";
+    gainLine.textContent = "修为增速 +" + formatPercent(tech.gain);
+
+    const extraLine = document.createElement("div");
+    extraLine.className = "tech-extra";
+    extraLine.textContent = "攻 +" + tech.atk + "｜防 +" + tech.def + "｜血 +" + tech.hp
+      + (tech.rate > 0 ? "｜突破 +" + formatPercent(tech.rate) : "");
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tech-btn";
+
+    if (locked) {
+      btn.textContent = "需至" + STAGES[tech.unlockStageId].name;
+      btn.disabled = true;
+    } else if (state.techId === tech.id) {
+      btn.textContent = "已主修";
+      btn.disabled = true;
+      btn.dataset.default = "true";
+    } else {
+      btn.textContent = "参悟主修";
+    }
+    btn.addEventListener("click", () => equipTech(tech.id));
+
+    card.appendChild(tierLine);
+    card.appendChild(nameLine);
+    card.appendChild(gainLine);
+    card.appendChild(extraLine);
+    card.appendChild(btn);
+    el.techGrid.appendChild(card);
+  });
+}
+
+/* =========================================================================
+   七-3、开局页：取名、性别、灵根（灵根随机，可无限刷新）
+   ========================================================================= */
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// 在品阶的资质区间内，给组内每个属性各抽一个分数
+function rollWithGrade(elementKeys, grade) {
+  const range = GRADE_QUALITY[grade];
+  const elements = elementKeys.map((key) => ({
+    key,
+    quality: randomInt(range[0], range[1])
+  }));
+  const total = elements.reduce((sum, item) => sum + item.quality, 0);
+  return { elements, quality: Math.round(total / elements.length) };
+}
+
+function shuffle(list) {
+  const copy = list.slice();
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = randomInt(0, i);
+    const temp = copy[i];
+    copy[i] = copy[j];
+    copy[j] = temp;
+  }
+  return copy;
+}
+
+// 抽一副灵根：先决定走混沌 / 变异 / 纯五行哪条路，再把属性和资质一次抽定
+function pickRootRoll() {
+  const dice = Math.random();
+
+  if (dice < CHAOS_CHANCE) {
+    return rollWithGrade(["混沌"], "混沌灵根");
+  }
+
+  if (dice < CHAOS_CHANCE + VARIANT_ALONE_CHANCE) {
+    const variant = VARIANT_ELEMENTS[randomInt(0, VARIANT_ELEMENTS.length - 1)];
+    return rollWithGrade([variant], "变异灵根");
+  }
+
+  if (dice < CHAOS_CHANCE + VARIANT_ALONE_CHANCE + VARIANT_MIX_CHANCE) {
+    const variant = VARIANT_ELEMENTS[randomInt(0, VARIANT_ELEMENTS.length - 1)];
+    const five = FIVE_ELEMENTS[randomInt(0, FIVE_ELEMENTS.length - 1)];
+    return rollWithGrade([variant, five], "变异灵根");
+  }
+
+  // 纯五行：先抽这一次出现几个属性，再从不重复的五行里取
+  const totalWeight = FIVE_COUNT_WEIGHTS.reduce((sum, item) => sum + item.weight, 0);
+  let rest = Math.random() * totalWeight;
+  let count = FIVE_COUNT_WEIGHTS[FIVE_COUNT_WEIGHTS.length - 1].count;
+  for (const item of FIVE_COUNT_WEIGHTS) {
+    rest -= item.weight;
+    if (rest <= 0) {
+      count = item.count;
+      break;
+    }
+  }
+
+  const picked = shuffle(FIVE_ELEMENTS).slice(0, count);
+  return rollWithGrade(picked, rootGrade(picked));
+}
+
+function rollSpiritRoot(countAsReroll) {
+  const roll = pickRootRoll();
+  state.rootElements = roll.elements;
+  state.rootQuality = roll.quality;
+  if (countAsReroll) state.rootRolls += 1;
+  return roll;
+}
+
+function renderStart() {
+  // 第一次进开局页时先随机一副灵根，免得玩家面对空白
+  if (rootElements().length === 0) rollSpiritRoot(false);
+
+  const elements = rootElements();
+  const grade = rootGrade(elements);
+  const muls = rootAttrMuls();
+
+  // 一个属性一个圆圈，分数写在各自圆圈下面
+  el.rootOrbs.innerHTML = "";
+  elements.forEach((item) => {
+    const key = elementKey(item);
+    const score = Math.round(typeof item === "string" ? state.rootQuality : item.quality);
+
+    const cell = document.createElement("div");
+    cell.className = "root-orb-item";
+
+    const orb = document.createElement("div");
+    orb.className = "root-orb";
+    orb.textContent = key;
+    orb.dataset.long = String(key.length > 1);
+
+    const scoreText = document.createElement("div");
+    scoreText.className = "root-orb-score";
+    scoreText.textContent = String(score);
+
+    cell.appendChild(orb);
+    cell.appendChild(scoreText);
+    el.rootOrbs.appendChild(cell);
+  });
+
+  el.rootGrade.textContent = grade;
+  el.rootBonus.textContent = "修行速度 ×" + rootPoints().toFixed(1)
+    + "　攻击 ×" + muls.atk.toFixed(1)
+    + "　防御 ×" + muls.def.toFixed(1)
+    + "　气血 ×" + muls.hp.toFixed(1);
+  el.rootRolls.textContent = "已刷 " + state.rootRolls + " 次 · 次数不限";
+
+  Array.from(el.genderRow.querySelectorAll(".choice")).forEach((btn) => {
+    btn.dataset.selected = String(btn.dataset.gender === ui.gender);
+  });
+
+  el.startBtn.disabled = false;
+  el.startNote.textContent = "灵根不称心就一直刷新，不必将就。";
+}
+
+// 刷新灵根：重新抽一副，不做任何限制
+function rerollSpiritRoot() {
+  rollSpiritRoot(true);
+  renderStart();
+  showToast("刷出" + rootGrade() + "（" + rootElements().map(elementKey).join("、") + "），资质 " + Math.round(rootAverageQuality()));
+}
+
+function beginCultivation() {
+  const elements = rootElements();
+  if (elements.length === 0) {
+    showToast("灵根还没显现，先刷新一次");
+    return;
+  }
+
+  state.name = (el.nameInput.value.trim() || "无名散修").slice(0, 8);
+  state.gender = ui.gender;
+  state.started = true;
+  state.startedAt = Date.now();
+
+  addLog(state.name + "，" + rootGrade() + "（" + elements.map(elementKey).join("、") + "）资质 " + Math.round(rootAverageQuality()) + "，自今日起踏上仙途。", "good");
+  addHistory(state.name + "入道，身负" + rootGrade() + "（" + elements.map(elementKey).join("、")
+    + "），资质 " + Math.round(rootAverageQuality()) + "，于" + currentStage().name + "起始修行。", "start");
+  lastTickAt = Date.now();   // 从入道这一刻开始算修为，不把停在开局页的时间补进去
+  saveState();
+
+  // 入道后先落在洞府，由他自选去修炼还是先置办家当
+  window.location.hash = HASH_BY_VIEW.cave;
+  showView("cave");
+  render();
+}
+
+/* =========================================================================
+   八、游戏逻辑
+   ========================================================================= */
+function toggleMeditating() {
+  state.meditating = !state.meditating;
+  addLog(state.meditating ? "入定，灵台清明。" : "收功，暂止修炼。", "info");
+  render();
+}
+
+// 参悟并改修一本功法：境界不够就拒绝，同一本不重复改修
+function equipTech(techId) {
+  const tech = TECHS.find((item) => item.id === techId);
+  if (!tech) return;
+  if (state.stage < tech.unlockStageId) {
+    showToast("境界不足，需至" + STAGES[tech.unlockStageId].name + "方可参悟此功法");
+    return;
+  }
+  if (state.techId === tech.id) return;
+
+  state.techId = tech.id;
+  addLog("改修《" + tech.name + "》，行气路径为之一变。", "good");
+  showToast("已主修《" + tech.name + "》");
+  saveState();
+  render();
+}
+
+function tryBreakthrough() {
+  const stage = currentStage();
+  const need = stage.need;
+  if (need === null) return;
+  if (state.cultivation < need) {
+    showToast("修为还不够，先积累到 " + formatNumber(need));
+    return;
+  }
+
+  const success = Math.random() < effectiveRate();
+  state.breakBonus = 0;   // 破境丹用一次就散，不论成败
+
+  if (success) {
+    state.cultivation -= need;
+    const rewardStones = STONE_PER_BREAKTHROUGH + stage.id * STONE_PER_STAGE;
+    state.stones += rewardStones;
+    state.stage = Math.min(state.stage + 1, LAST_STAGE_ID);
+    state.attack += stage.bonus.atk;
+    state.defense += stage.bonus.def;
+    state.hp += stage.bonus.hp;
+
+    const newStage = currentStage();
+    if (stage.isTrial) {
+      addLog("九霄雷云散去，劫数已成。你踏入" + newStage.name + "。", "good");
+      addHistory("渡劫成功，自" + stage.name + "破入" + newStage.name + "。", "good");
+    } else {
+      addLog("突破成功，晋升" + newStage.name + "。", "good");
+      addHistory("自" + stage.name + "突破至" + newStage.name + "，成。", "good");
+    }
+    addLog("突破得灵石 " + formatNumber(rewardStones) + "。", "info");
+    showToast("突破成功：" + newStage.name + "，得灵石 " + rewardStones);
+  } else {
+    const lost = Math.round(need * stage.lossRatio);
+    state.cultivation = Math.max(0, state.cultivation - lost);
+
+    if (stage.isTrial) {
+      const fallbackId = Math.max(0, state.stage - stage.fallbackStages);
+      const fallbackName = STAGES[fallbackId].name;
+      state.stage = fallbackId;
+      addLog("天劫反噬，道基受损，境界跌回" + fallbackName + "。", "bad");
+      addHistory("冲击" + STAGES[Math.min(stage.id + 1, LAST_STAGE_ID)].name
+        + "时天劫反噬，败，境界跌回" + fallbackName + "。", "bad");
+      showToast("渡劫失败，跌落至" + fallbackName);
+    } else {
+      addLog("突破失败，灵气溃散，折损 " + formatNumber(lost) + " 修为。", "bad");
+      addHistory("冲击" + STAGES[Math.min(stage.id + 1, LAST_STAGE_ID)].name
+        + "未成，败，折损 " + formatNumber(lost) + " 修为。", "bad");
+      showToast("突破失败，损失 " + formatNumber(lost) + " 修为");
+    }
+  }
+
+  saveState();
+  render();
+}
+
+function injectCultivation() {
+  const stage = currentStage();
+  if (stage.need === null) {
+    showToast("已至最高境界，无需再注入");
+    return;
+  }
+  const amount = Math.max(1, Math.round(stage.need * 0.8));
+  state.cultivation += amount;
+  addLog("注入修为（体验）+ " + formatNumber(amount) + "。", "info");
+  render();
+}
+
+/* =========================================================================
+   八-2、商店、丹药、轮回
+   ========================================================================= */
+function pillCount(pillId) {
+  const count = state.pills[pillId];
+  return typeof count === "number" ? count : 0;
+}
+
+function buyPill(pillId) {
+  const pill = PILLS[pillId];
+  if (!pill) return;
+  if (state.stones < pill.price) {
+    showToast("灵石不够，还差 " + formatNumber(pill.price - state.stones) + " 枚");
+    return;
+  }
+  state.stones -= pill.price;
+  state.pills[pillId] = pillCount(pillId) + 1;
+  showToast("买下一枚" + pill.name);
+  saveState();
+  renderShop();
+  renderBag();
+}
+
+function usePill(pillId) {
+  const pill = PILLS[pillId];
+  if (!pill) return;
+  if (pillCount(pillId) <= 0) {
+    showToast("丹房里没有这味丹药了，先去坊市买");
+    return;
+  }
+
+  const stage = currentStage();
+
+  if (pill.use === "instantGain") {
+    if (stage.need === null) {
+      showToast("已至最高境界，服丹无用");
+      return;
+    }
+    const amount = Math.max(1, Math.round(stage.need * PILL_INSTANT_RATIO));
+    state.cultivation += amount;
+    addLog("服下" + pill.name + "，修为 +" + formatNumber(amount) + "。", "good");
+  }
+
+  if (pill.use === "breakBonus") {
+    if (stage.need === null) {
+      showToast("已至最高境界，破境丹无用");
+      return;
+    }
+    state.breakBonus += PILL_BREAK_BONUS;
+  }
+
+  if (pill.use === "speedBuff") {
+    const base = Math.max(Date.now(), state.speedUntil);
+    state.speedUntil = base + SPEED_BUFF_MS;
+  }
+
+  state.pills[pillId] = pillCount(pillId) - 1;
+  addHistory("服下" + pill.name + "。", "info");
+  showToast("服下" + pill.name);
+  saveState();
+  renderShop();
+  renderBag();
+  render();
+}
+
+// 转世：清空境界修为与属性，保留灵石、丹药与灵根，换来永久加成
+function doRebirth() {
+  if (state.stage < REBIRTH_MIN_STAGE) {
+    showToast("修为尚浅，至少到" + STAGES[REBIRTH_MIN_STAGE].name + "方可转世");
+    return;
+  }
+  const confirmed = window.confirm(
+    "转世将散尽此身修为，境界重回" + STAGES[0].name + "，并永久提高修行速度。确定吗？"
+  );
+  if (!confirmed) return;
+
+  const oldStageName = currentStage().name;
+  state.rebirths += 1;
+  state.stage = 0;
+  state.cultivation = 0;
+  state.attack = BASE_ATTACK;
+  state.defense = BASE_DEFENSE;
+  state.hp = BASE_HP;
+  state.techId = null;
+  state.breakBonus = 0;
+  state.speedUntil = 0;
+
+  const gainText = "第 " + state.rebirths + " 世，永久修行速度 +"
+    + formatPercent(REBIRTH_BONUS_PER_LIFE * state.rebirths);
+  addLog("自" + oldStageName + "转世重修。" + gainText, "good");
+  addHistory("于" + oldStageName + "坐化转世，此为第 " + state.rebirths + " 世。" + gainText, "start");
+  lastTickAt = Date.now();
+  saveState();
+  showToast("已入第 " + state.rebirths + " 世");
+  render();
+  renderRebirth();
+}
+
+/* =========================================================================
+   九、时间结算：用真实经过的毫秒算，而不是“每跳一次加一点”
+   这样即使浏览器切到后台、结算被延迟，修为也不会漏算或暴涨
+   ========================================================================= */
+let lastTickAt = Date.now();
+let lastSaveAt = Date.now();
+
+function tick() {
+  const now = Date.now();
+  const elapsedSeconds = (now - lastTickAt) / 1000;
+  lastTickAt = now;
+
+  // 还没入道的停在开局页，不结算也不重绘
+  if (!state.started) return;
+
+  if (state.meditating) {
+    state.cultivation += gainPerSecond() * elapsedSeconds;
+  }
+
+  if (now - lastSaveAt >= AUTO_SAVE_MS) {
+    saveState();
+    lastSaveAt = now;
+  }
+
+  render();
+}
+
+/* =========================================================================
+   十、存档
+   ========================================================================= */
+function saveState() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.error("保存存档失败", error);
+  }
+}
+
+function resetGame() {
+  const confirmed = window.confirm("重开会清空当前道号、灵根与全部进度，重新开局。确定吗？");
+  if (!confirmed) return;
+  state = createInitialState();
+  ui.techRenderKey = "";
+  ui.dungeonKey = "";
+  ui.rebirthKey = "";
+  ui.caveKey = "";
+  ui.attrKey = "";
+  el.nameInput.value = "";
+  saveState();
+  window.location.hash = "";
+  showView("start");
+  render();
+}
+
+/* =========================================================================
+   十一、启动
+   ========================================================================= */
+/* =========================================================================
+   十一、页面切换：修炼 / 功法 / 生平 三个视图
+   用地址栏 hash 记住停在哪一页，刷新后还停在原处
+   ========================================================================= */
+const VIEWS = {
+  start: document.getElementById("viewStart"),
+  cave: document.getElementById("viewCave"),
+  partner: document.getElementById("viewPartner"),
+  attr: document.getElementById("viewAttr"),
+  cultivation: document.getElementById("viewCultivation"),
+  techniques: document.getElementById("viewTech"),
+  history: document.getElementById("viewDungeon"),
+  shop: document.getElementById("viewShop"),
+  bag: document.getElementById("viewBag"),
+  rebirth: document.getElementById("viewRebirth")
+};
+const HASH_BY_VIEW = {
+  cave: "#cave",
+  partner: "#partner",
+  attr: "#attr",
+  cultivation: "#cultivation",
+  techniques: "#techniques",
+  history: "#dungeon",
+  shop: "#shop",
+  bag: "#bag",
+  rebirth: "#rebirth"
+};
+const NAV_BUTTONS = Array.from(document.querySelectorAll(".nav-btn"));
+
+function viewFromHash() {
+  const hash = window.location.hash;
+  if (hash === HASH_BY_VIEW.partner) return "partner";
+  if (hash === HASH_BY_VIEW.attr) return "attr";
+  if (hash === HASH_BY_VIEW.cultivation) return "cultivation";
+  if (hash === HASH_BY_VIEW.techniques) return "techniques";
+  if (hash === HASH_BY_VIEW.history) return "history";
+  if (hash === HASH_BY_VIEW.shop) return "shop";
+  if (hash === HASH_BY_VIEW.bag) return "bag";
+  if (hash === HASH_BY_VIEW.rebirth) return "rebirth";
+  return "cave";
+}
+
+function showView(viewName) {
+  Object.keys(VIEWS).forEach((key) => {
+    VIEWS[key].hidden = key !== viewName;
+  });
+  // 开局页没有导航栏与状态条，入道后才出现
+  el.navBar.hidden = viewName === "start";
+  el.topBar.hidden = viewName === "start";
+  // 从洞府进去的子页面，底部导航也让「洞府」保持选中，不让人以为走丢了
+  const caveSubViews = ["partner", "shop", "bag"];
+  NAV_BUTTONS.forEach((btn) => {
+    const isActive = btn.dataset.view === viewName
+      || (btn.dataset.view === "cave" && caveSubViews.indexOf(viewName) >= 0);
+    btn.dataset.active = String(isActive);
+    btn.setAttribute("aria-selected", String(isActive));
+  });
+  if (viewName === "cave") renderCave();
+  if (viewName === "partner") renderPartner();
+  if (viewName === "attr") renderAttr();
+  if (viewName === "techniques") renderTechs();
+  if (viewName === "history") renderDungeon();
+  if (viewName === "shop") renderShop();
+  if (viewName === "bag") renderBag();
+  if (viewName === "rebirth") renderRebirth();
+  if (viewName === "start") renderStart();
+}
+
+NAV_BUTTONS.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (viewFromHash() === btn.dataset.view) {
+      showView(btn.dataset.view);
+      return;
+    }
+    window.location.hash = HASH_BY_VIEW[btn.dataset.view];
+  });
+});
+
+window.addEventListener("hashchange", () => {
+  // 还没入道时，任何 hash 都留在开局页
+  if (!state.started) {
+    showView("start");
+    return;
+  }
+  showView(viewFromHash());
+});
+
+showView(state.started ? viewFromHash() : "start");
+render();
+window.setInterval(tick, ACCRUE_TICK_MS);
+
+el.meditateBtn.addEventListener("click", toggleMeditating);
+el.breakBtn.addEventListener("click", tryBreakthrough);
+el.injectBtn.addEventListener("click", injectCultivation);
+el.rebirthBtn.addEventListener("click", doRebirth);
+el.startBtn.addEventListener("click", beginCultivation);
+el.rerollBtn.addEventListener("click", rerollSpiritRoot);
+
+el.autoEquipBtn.addEventListener("click", autoEquipBest);
+
+// 背包三个页签只换内容不换页面，切完立刻重画
+Array.from(document.querySelectorAll(".bag-tab")).forEach((btn) => {
+  btn.addEventListener("click", () => {
+    ui.bagTab = btn.dataset.bag;
+    renderBag();
+  });
+});
+
+Array.from(document.querySelectorAll("[data-back]")).forEach((btn) => {
+  btn.addEventListener("click", () => {
+    window.location.hash = HASH_BY_VIEW[btn.dataset.back];
+    showView(btn.dataset.back);
+  });
+});
+
+Array.from(el.genderRow.querySelectorAll(".choice")).forEach((btn) => {
+  btn.addEventListener("click", () => {
+    ui.gender = btn.dataset.gender;
+    renderStart();
+  });
+});
+
+// 关页面前再存一次，避免刚突破的进度丢掉
+window.addEventListener("beforeunload", saveState);
+</script>
+</body>
+</html>
